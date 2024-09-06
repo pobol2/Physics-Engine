@@ -1,140 +1,107 @@
 #include <iostream>
 
-class Vector3 {
+class Vector {
 private:
-    double x, y, z;
+    float m_x, m_y;
 
 public:
     // Constructors
-    Vector3() : x(0), y(0), z(0) {}
-    Vector3(double x, double y, double z) : x(x), y(y), z(z) {}
+    Vector() : m_x(0), m_y(0) {}
+    Vector(float x, float y) : m_x(x), m_y(y) {}
 
-    // Accessors
-    double getX() const { return x; }
-    double getY() const { return y; }
-    double getZ() const { return z; }
+    // Getter and Setter for x
+    float getX() const { return m_x; }
+    void setX(float x) { m_x = x; }
 
-    /*// Mutators
-    void setX(double x) { this->x = x; }
-    void setY(double y) { this->y = y; }
-    void setZ(double z) { this->z = z; }*/
+    // Getter and Setter for y
+    float getY() const { return m_y; }
+    void setY(float y) { m_y = y; }
 
-    // Overload the + operator for vector addition
-    Vector3 operator+(const Vector3& v) const {
-        return Vector3(x + v.x, y + v.y, z + v.z);
+    // Addition of two vectors
+    Vector operator+(const Vector& v) const {
+        return Vector(m_x + v.m_x, m_y + v.m_y);
     }
 
-    // Overload the - operator for vector subtraction
-    Vector3 operator-(const Vector3& v) const {
-        return Vector3(x - v.x, y - v.y, z - v.z);
+    // Substraction of two vectors
+    Vector operator-(const Vector& v) const {
+        return Vector(m_x - v.m_x, m_y - v.m_y);
     }
 
-    // Overload the * operator for scalar multiplication
-    Vector3 operator*(const double scalar) const {
-        return Vector3(x * scalar, y * scalar, z * scalar);
+    // Dot product of two vectors
+    float dot(const Vector& v) const {
+        return m_x * v.m_x + m_y * v.m_y;
     }
 
-    // Overload the * operator for dot product
-    double operator*(const Vector3& v) const {
-        return x * v.x + y * v.y + z * v.z;
-    }
-
-    // Cross product
-    Vector3 cross(const Vector3& v) const {
-        return Vector3(
-            y * v.z - z * v.y,
-            z * v.x - x * v.z,
-            x * v.y - y * v.x
-        );
-    }
-
-    // Overload the << operator to print the vector as a column vector
-    friend std::ostream& operator<<(std::ostream& os, const Vector3& vec) {
-        os << vec.x << std::endl;
-        os << vec.y << std::endl;
-        os << vec.z << std::endl;
+    // Overload the << operator
+    friend std::ostream& operator<<(std::ostream& os, const Vector& v) {
+        os << v.m_x << "\n" << v.m_y;
         return os;
     }
 };
 
-class Matrix3 {
+class Matrix {
 private:
-    double data[3][3];
+    float m_data[2][2];
 
 public:
-    // Default constructor to initialize the matrix with zeros
-    Matrix3() {
-        for (size_t i = 0; i < 3; ++i) {
-            for (size_t j = 0; j < 3; ++j) {
-                data[i][j] = 0.0;
-            }
+    // Constructor
+    Matrix() : m_data{{0, 0}, {0, 0}} {}
+    Matrix(float a, float b, float c, float d) : m_data{{a, b}, {c, d}} {}
+
+    // Static method to create an identity matrix
+    static Matrix Identity() {
+        return Matrix(1, 0, 0, 1);
+    }
+
+    // Method to set a value at a specific position
+    void set(int row, int col, float value) {
+        if (row >= 0 && row < 2 && col >= 0 && col < 2) {
+            m_data[row][col] = value;
+        } else {
+            throw std::out_of_range("Index out of bounds");
         }
     }
 
-    // Constructor to initialize the matrix with individual values
-    Matrix3(double a11, double a12, double a13,
-            double a21, double a22, double a23,
-            double a31, double a32, double a33) {
-        data[0][0] = a11; data[0][1] = a12; data[0][2] = a13;
-        data[1][0] = a21; data[1][1] = a22; data[1][2] = a23;
-        data[2][0] = a31; data[2][1] = a32; data[2][2] = a33;
+    // Method to get a value from a specific position
+    float get(int row, int col) const {
+        if (row >= 0 && row < 2 && col >= 0 && col < 2) {
+            return m_data[row][col];
+        } else {
+            throw std::out_of_range("Index out of bounds");
+        }
     }
 
-    // Overload the () operator for element access
-    double& operator()(size_t row, size_t col) {
-        if (row >= 3 || col >= 3) {
-            throw std::out_of_range("Matrix indices out of range");
-        }
-        return data[row][col];
-    }
-
-    const double& operator()(size_t row, size_t col) const {
-        if (row >= 3 || col >= 3) {
-            throw std::out_of_range("Matrix indices out of range");
-        }
-        return data[row][col];
+    // Matrix-Matrix multiplication
+    Matrix operator*(const Matrix m) const {
+        float a = m_data[0][0] * m.m_data[0][0] + m_data[0][1] * m.m_data[1][0];
+        float b = m_data[0][0] * m.m_data[0][1] + m_data[0][1] * m.m_data[1][1];
+        float c = m_data[1][0] * m.m_data[0][0] + m_data[1][1] * m.m_data[1][0];
+        float d = m_data[1][0] * m.m_data[0][1] + m_data[1][1] * m.m_data[1][1];
+        return Matrix(a, b, c, d);
     }
 
     // Matrix-vector multiplication
-    Vector3 operator*(const Vector3& vec) const {
-        return Vector3(
-            data[0][0] * vec.getX() + data[0][1] * vec.getY() + data[0][2] * vec.getZ(),
-            data[1][0] * vec.getX() + data[1][1] * vec.getY() + data[1][2] * vec.getZ(),
-            data[2][0] * vec.getX() + data[2][1] * vec.getY() + data[2][2] * vec.getZ()
-        );
+    Vector operator*(const Vector v) const {
+        float x = m_data[0][0] * v.getX() + m_data[0][1] * v.getY();
+        float y = m_data[1][0] * v.getX() + m_data[1][1] * v.getY();
+        return Vector(x, y);
     }
 
-    // Overload the << operator to print the matrix as desired
-    friend std::ostream& operator<<(std::ostream& os, const Matrix3& matrix) {
-        for (size_t i = 0; i < 3; ++i) {
-            for (size_t j = 0; j < 3; ++j) {
-                os << matrix.data[i][j] << " ";
-            }
-            os << std::endl;
-        }
+    // Overload the << operator
+    friend std::ostream& operator<<(std::ostream& os, const Matrix& m) {
+        os << m.m_data[0][0] << " " << m.m_data[0][1] << "\n" << m.m_data[1][0] << " " << m.m_data[1][1];
         return os;
     }
+
 };
 
 int main() {
-    // Initialize a 3x3 matrix
-    Matrix3 matrix(1, 2, 3,
-                   4, 5, 6,
-                   7, 8, 9);
 
-    // Initialize a 3D vector
-    Vector3 vector(1, 2, 3);
+    Matrix m(1, 0, 0, 1);
+    Vector v(1, 2);
+    Vector v2(0, 0);
 
-    // Multiply matrix by vector
-    Vector3 result = matrix * vector;
-
-    // Print the results
-    std::cout << "Matrix:" << std::endl;
-    std::cout << matrix << std::endl;
-    std::cout << "Vector:" << std::endl;
-    std::cout << vector << std::endl;
-    std::cout << "Result of matrix-vector multiplication:" << std::endl;
-    std::cout << result << std::endl;
+    std::cout << m * m << std::endl;
 
     return 0;
 }
