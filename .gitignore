@@ -1,0 +1,29 @@
+# Don't commit binaries
+*.a
+*.asm
+*.dll
+*.dylib
+*.exe
+*.lib
+*.out
+*.o
+*.so
+*.so.*
+
+# Exclude editor config
+.vscode/
+.vs/
+
+# Exclude temporary folders
+*.egg-info/
+build/
+
+# My ToDo list
+ToDo
+
+# Ignore ALL .aux .log .out .toc .synctex.gz files
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
