@@ -9,21 +9,27 @@ private:
     Vector m_position;
     Vector m_velocity;
     Vector m_acceleration;
+    Vector m_force;        // Net force acting on the point
+    double m_mass;         // Mass of the point
 
 public:
     // Constructors
     Point();
-    Point(const Vector& position, const Vector& velocity = Vector(), const Vector& acceleration = Vector());
+    Point(const Vector& position, const Vector& velocity = Vector(), const Vector& acceleration = Vector(), double mass = 1.0);
 
-    // Getters and setters
+     // Getters and setters
     Vector getPosition() const;
     void setPosition(const Vector& position);
     Vector getVelocity() const;
     void setVelocity(const Vector& velocity);
     Vector getAcceleration() const;
     void setAcceleration(const Vector& acceleration);
+    Vector getForce() const;
+    void setForce(const Vector& force);
+    double getMass() const;
+    void setMass(double mass);
 
-    // Update the point's state based on a time step
+    // Update the point's state based on Euler method
     void update(double deltaTime);
 
     // Overload the << operator

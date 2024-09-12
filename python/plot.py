@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 # Read the data from CSV file
-data = pd.read_csv('../out/simulation_results.csv')
+data = pd.read_csv('./out/simulation_results.csv')
 
 # Extract columns
 time = data['Time']
