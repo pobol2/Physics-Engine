@@ -7,13 +7,20 @@ set(PHYSICS_SOURCE_DIR
     src
 )
 set(PHYSICS_SOURCE
+    ${PHYSICS_SOURCE_DIR}/Vector.cpp
+    ${PHYSICS_SOURCE_DIR}/Point.cpp
+    ${PHYSICS_SOURCE_DIR}/Matrix.cpp
+    ${PHYSICS_SOURCE_DIR}/Identity.cpp
     ${PHYSICS_SOURCE_DIR}/main.cpp
 )
 set(PHYSICS_LIBRARIES_DIR
     libs
 )
-set(PHYSICS_LIBRARIES 
+set(PHYSICS_LIBRARIES
 )
+
+# Specify include directories
+include_directories(include)
 
 project(${PHYSICS_PROJECT_NAME})
 
