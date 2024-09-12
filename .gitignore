@@ -27,3 +27,9 @@ ToDo
 *.out
 *.toc
 *.synctex.gz
+
+# Exclude python venv
+venv/
+
+# Exclude data results files
+*.csv

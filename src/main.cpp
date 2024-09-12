@@ -16,7 +16,7 @@ int main() {
     // Time step
     double deltaTime = 0.05;
 
-    // Simulationtim
+    // Simulation time
     double totalTime = 5;
 
     // Open a file to write the data
