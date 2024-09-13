@@ -32,13 +32,37 @@ void Point::setMass(double mass) {
     m_mass = mass;
 }
 
+// Add gravitational force
+void Point::applyGravity() {
+    const double gravity = 9.81; // Define gravitational acceleration (m/s²)   
+    Vector gravityForce(0, -gravity * m_mass, 0); // Create a gravitational force vector
+    m_force = m_force + gravityForce;  // Add gravitational force to the current force
+}
+
+// Calculate kinetic energy
+double Point::kineticEnergy() const {
+    double speedSquared = m_velocity.magnitudeSquared();
+    return 0.5 * m_mass * speedSquared;
+}
+
+// Calculate potential energy (using the y-axis for height)
+double Point::potentialEnergy() const {
+    double height = m_position.getY();  // Assume height is the y-coordinate
+    return m_mass * 9.81 * height;
+}
+
+// Calculate total mechanical energy
+double Point::totalEnergy() const {
+    return kineticEnergy() + potentialEnergy();
+}
+
 // Update the point's state based on Euler method
 void Point::update(double deltaTime) {
     if (m_mass <= 0) {
         throw std::logic_error("Mass must be greater than zero before updating.");
     }
 
-    // Calculate acceleration from force and mass
+    // Calculate acceleration from force and mass (Newton’s Second Law)
     m_acceleration = m_force * (1.0 / m_mass);
 
     // Update velocity and position

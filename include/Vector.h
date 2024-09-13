@@ -26,7 +26,11 @@ public:
     Vector operator-(const Vector& v) const;
     Vector operator*(double scalar) const;
     double dot(const Vector& v) const;
+    double magnitudeSquared() const;
     Vector cross(const Vector& v) const;
+
+    // Overload the * operator for scalar multiplication (double * Vector)
+    friend Vector operator*(double scalar, const Vector& v);
 
     // Overload the << operator
     friend std::ostream& operator<<(std::ostream& os, const Vector& v);

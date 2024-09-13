@@ -17,7 +17,7 @@ public:
     Point();
     Point(const Vector& position, const Vector& velocity = Vector(), const Vector& acceleration = Vector(), double mass = 1.0);
 
-     // Getters and setters
+    // Getters and setters
     Vector getPosition() const;
     void setPosition(const Vector& position);
     Vector getVelocity() const;
@@ -28,6 +28,14 @@ public:
     void setForce(const Vector& force);
     double getMass() const;
     void setMass(double mass);
+
+    // Apply gravity
+    void applyGravity();
+
+    // Energy
+    double kineticEnergy() const;
+    double potentialEnergy() const;
+    double totalEnergy() const;
 
     // Update the point's state based on Euler method
     void update(double deltaTime);

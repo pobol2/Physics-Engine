@@ -31,10 +31,17 @@ Vector Vector::operator-(const Vector& v) const {
 Vector Vector::operator*(double scalar) const {
     return Vector(m_x * scalar, m_y * scalar, m_z * scalar);
 }
+Vector operator*(double scalar, const Vector& v) {
+    return v * scalar; // Calls the Vector's * operator
+}
 
 // Dot product of two vectors
 double Vector::dot(const Vector& v) const {
     return m_x * v.m_x + m_y * v.m_y + m_z * v.m_z;
+}
+
+double Vector::magnitudeSquared() const {
+    return this->dot(*this);
 }
 
  // Cross product of two vectors

@@ -7,20 +7,21 @@ int main() {
     
     // Initial position, velocity, and acceleration
     Vector initialPosition(0, 0, 0);
-    Vector initialVelocity(0, 10, 0);
-    Vector initialAcceleration(0, 0, 0); // gravity-like acceleration
-    Vector force(5, -10, 0); // A force of 10 units in the x direction
-    double mass = 2.0; // Mass of 2 units
+    Vector initialVelocity(0, 0, 0);
+    Vector initialAcceleration(0, 0, 0);
+    Vector force(0, 0, 0);
+    double mass = 2.0;
 
     // Create a Point object
     Point p(initialPosition, initialVelocity, initialAcceleration, mass);
     p.setForce(force);
+    p.applyGravity();
 
     // Time step
-    double deltaTime = 0.05;
+    double deltaTime = 0.01;
 
     // Simulation time
-    double totalTime = 5;
+    double totalTime = 1;
 
     // Open a file to write the data
     std::ofstream file("./out/simulation_results.csv");
@@ -30,6 +31,7 @@ int main() {
     for (int i = 0; i <= totalTime/deltaTime; ++i) {
         double t = i * deltaTime;
         Vector pos = p.getPosition();
+        std::cout << p.potentialEnergy() << std::endl;
         file << t << "," << pos.getX() << "," << pos.getY() << "," << pos.getZ() << "\n";
         p.update(deltaTime);
     }
