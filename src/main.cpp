@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "Vector.h"
-#include "Point.h"
+#include "Particle.h"
 
 int main() {
     
@@ -12,8 +12,8 @@ int main() {
     Vector force(0, 0, 0);
     double mass = 2.0;
 
-    // Create a Point object
-    Point p(initialPosition, initialVelocity, initialAcceleration, mass);
+    // Create a particle object
+    Particle p(initialPosition, initialVelocity, initialAcceleration, mass);
     p.setForce(force);
     p.applyGravity();
 
@@ -31,7 +31,7 @@ int main() {
     for (int i = 0; i <= totalTime/deltaTime; ++i) {
         double t = i * deltaTime;
         Vector pos = p.getPosition();
-        std::cout << p.potentialEnergy() << std::endl;
+        std::cout << p.totalEnergy() << std::endl;
         file << t << "," << pos.getX() << "," << pos.getY() << "," << pos.getZ() << "\n";
         p.update(deltaTime);
     }

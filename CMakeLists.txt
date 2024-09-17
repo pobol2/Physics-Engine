@@ -8,7 +8,7 @@ set(PHYSICS_SOURCE_DIR
 )
 set(PHYSICS_SOURCE
     ${PHYSICS_SOURCE_DIR}/Vector.cpp
-    ${PHYSICS_SOURCE_DIR}/Point.cpp
+    ${PHYSICS_SOURCE_DIR}/Particle.cpp
     ${PHYSICS_SOURCE_DIR}/Matrix.cpp
     ${PHYSICS_SOURCE_DIR}/Identity.cpp
     ${PHYSICS_SOURCE_DIR}/main.cpp

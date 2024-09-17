@@ -1,21 +1,21 @@
-// Point.h
-#ifndef POINT_H
-#define POINT_H
+// Particle.h
+#ifndef PARTICLE_H
+#define PARTICLE_H
 
 #include "Vector.h"
 
-class Point {
+class Particle {
 private:
     Vector m_position;
     Vector m_velocity;
     Vector m_acceleration;
-    Vector m_force;        // Net force acting on the point
-    double m_mass;         // Mass of the point
+    Vector m_force;        // Net force acting on the particle
+    double m_mass;         // Mass of the particle
 
 public:
     // Constructors
-    Point();
-    Point(const Vector& position, const Vector& velocity = Vector(), const Vector& acceleration = Vector(), double mass = 1.0);
+    Particle();
+    Particle(const Vector& position, const Vector& velocity = Vector(), const Vector& acceleration = Vector(), double mass = 1.0);
 
     // Getters and setters
     Vector getPosition() const;
@@ -37,11 +37,11 @@ public:
     double potentialEnergy() const;
     double totalEnergy() const;
 
-    // Update the point's state based on Euler method
+    // Update the particle's state based on Euler method
     void update(double deltaTime);
 
     // Overload the << operator
-    friend std::ostream& operator<<(std::ostream& os, const Point& p);
+    friend std::ostream& operator<<(std::ostream& os, const Particle& p);
 };
 
-#endif // POINT_H
+#endif // PARTICLE_H

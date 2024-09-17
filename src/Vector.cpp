@@ -27,12 +27,20 @@ Vector Vector::operator-(const Vector& v) const {
     return Vector(m_x - v.m_x, m_y - v.m_y, m_z - v.m_z);
 }
 
- // Scalar multiplication
+// Scalar multiplication
 Vector Vector::operator*(double scalar) const {
     return Vector(m_x * scalar, m_y * scalar, m_z * scalar);
 }
 Vector operator*(double scalar, const Vector& v) {
     return v * scalar; // Calls the Vector's * operator
+}
+
+// Scalar division
+Vector Vector::operator/(double scalar) const {
+    if (scalar == 0) {
+        throw std::invalid_argument("Division by zero");
+    }
+    return Vector(m_x / scalar, m_y / scalar, m_z / scalar);
 }
 
 // Dot product of two vectors
