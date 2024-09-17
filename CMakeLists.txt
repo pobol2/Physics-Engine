@@ -11,6 +11,7 @@ set(PHYSICS_SOURCE
     ${PHYSICS_SOURCE_DIR}/Particle.cpp
     ${PHYSICS_SOURCE_DIR}/Matrix.cpp
     ${PHYSICS_SOURCE_DIR}/Identity.cpp
+    ${PHYSICS_SOURCE_DIR}/System.cpp
     ${PHYSICS_SOURCE_DIR}/main.cpp
 )
 set(PHYSICS_LIBRARIES_DIR
