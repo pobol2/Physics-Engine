@@ -1,15 +1,22 @@
 #include <iostream>
 #include <fstream>
+
+#include <GLFW/glfw3.h>
+#include <GL/glu.h>
+#include <tuple>
+#include <cmath> // For sin function
+
 #include "Vector.h"
 #include "Particle.h"
 #include "System.h"
+#include "Animate.h"
 
 int main() {
 
     System particleSystem;
 
     // Create some particles
-    Particle p1(Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0), 1.0);
+    Particle p1(Vector(0, 0, 0), Vector(5, 0, 0), Vector(0, 0, 0), 1.0);
     Particle p2(Vector(1, 1, 1), Vector(0, 1, 0), Vector(0, 0, 0), 2.0);
 
     // Add particles to the system
@@ -30,6 +37,8 @@ int main() {
     std::ofstream file("./out/simulation_results.csv");
     file << "Time,X_Position,Y_Position,Z_Position\n";
 
+    auto [window, quadric] =  initAnimation();
+
     // Simulate
     for (int i = 0; i <= totalTime/deltaTime; ++i) {
         particleSystem.update(deltaTime);
@@ -37,8 +46,12 @@ int main() {
         Vector pos = particleSystem.getParticle(0).getPosition();
         std::cout << particleSystem.totalEnergy() << std::endl;
         file << t << "," << pos.getX() << "," << pos.getY() << "," << pos.getZ() << "\n";
+
+        Animate(window, quadric, pos);
     }
 
+    endAnimation(window, quadric);
     file.close();
+
     return 0;
 }

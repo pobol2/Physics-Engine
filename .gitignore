@@ -33,3 +33,7 @@ venv/
 
 # Exclude data results files
 *.csv
+
+# Ignore GLFW directories
+libs/simulation/libs/mujoco
+libs/glfw
