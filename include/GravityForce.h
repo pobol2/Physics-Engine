@@ -10,6 +10,7 @@ public:
     GravityForce(double gravity) : m_gravity(gravity) {}
     
     void applyForce(System& system) const override;
+    double getPotentialEnergy(System& system) const override;  
 
 private:
     double m_gravity;

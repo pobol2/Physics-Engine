@@ -25,7 +25,7 @@ void System::applyForces() {
     }
 
     // Then, apply each force in the force list
-    for (const auto& force : m_forces) {
+    for (const Force* force : m_forces) {
         force->applyForce(*this);  // Apply forces to the system
     }
 }
@@ -54,15 +54,15 @@ double System::totalKineticEnergy() const {
 }
 
 // Calculate total potential energy of the system
-double System::totalPotentialEnergy() const {
+double System::totalPotentialEnergy() {
     double totalPE = 0.0;
-    for (const Particle& particle : m_particles) {
-        totalPE += particle.potentialEnergy();
+    for (const Force* force : m_forces) {
+        totalPE += force->getPotentialEnergy(*this);
     }
     return totalPE;
 }
 
 // Calculate total mechanical energy of the system
-double System::totalEnergy() const {
+double System::totalEnergy() {
     return totalKineticEnergy() + totalPotentialEnergy();
 }

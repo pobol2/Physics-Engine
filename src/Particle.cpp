@@ -38,17 +38,6 @@ double Particle::kineticEnergy() const {
     return 0.5 * m_mass * speedSquared;
 }
 
-// Calculate potential energy (using the y-axis for height)
-double Particle::potentialEnergy() const {
-    double height = m_position.getY();  // Assume height is the y-coordinate
-    return m_mass * 9.81 * height;
-}
-
-// Calculate total mechanical energy
-double Particle::totalEnergy() const {
-    return kineticEnergy() + potentialEnergy();
-}
-
 // Update the particle's state based on RK4 method
 void Particle::update(double deltaTime) {
 

@@ -14,6 +14,8 @@ public:
 
     void applyForce(System& system) const override;
 
+    double getPotentialEnergy(System& system) const override;
+
 private:
     size_t m_particle1Index;  // Index of the first particle
     size_t m_particle2Index;  // Index of the second particle

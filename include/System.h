@@ -33,10 +33,10 @@ public:
     double totalKineticEnergy() const;
 
     // Calculate total potential energy of the system
-    double totalPotentialEnergy() const;
+    double totalPotentialEnergy();
 
     // Calculate total mechanical energy of the system
-    double totalEnergy() const;
+    double totalEnergy();
 };
 
 #endif // SYSTEM_H

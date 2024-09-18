@@ -26,3 +26,19 @@ void SpringForce::applyForce(System& system) const {
     p1.setForce(p1.getForce() - springForce);      // Apply force to particle 1
     p2.setForce(p2.getForce() + springForce);      // Apply equal and opposite force to particle 2
 }
+
+double SpringForce::getPotentialEnergy(System& system) const {
+
+    Particle& p1 = system.getParticle(m_particle1Index); // Get first particle
+    Particle& p2 = system.getParticle(m_particle2Index); // Get second particle
+
+    // Compute displacement vector between the two particles
+    Vector displacement = p2.getPosition() - p1.getPosition();
+    
+    // Calculate the current length of the spring
+    double currentLength = displacement.magnitude();
+
+    double potentialEnergy = 0.5 * m_stiffness * currentLength * currentLength;
+
+    return potentialEnergy;
+}

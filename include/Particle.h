@@ -31,8 +31,6 @@ public:
 
     // Energy
     double kineticEnergy() const;
-    double potentialEnergy() const;
-    double totalEnergy() const;
 
     // Update the particle's state based on Euler method
     void update(double deltaTime);

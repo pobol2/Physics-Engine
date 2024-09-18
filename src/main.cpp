@@ -33,9 +33,6 @@ int main() {
     SpringForce spring(0, 1, 0, 100);  
     particleSystem.addForce(spring);
 
-    // Apply forces to particles
-    particleSystem.applyForces();
-
     // Time step
     double deltaTime = 0.001;
 
@@ -53,7 +50,7 @@ int main() {
         particleSystem.update(deltaTime);
         //double t = i * deltaTime;
         //Vector pos = particleSystem.getParticle(0).getPosition();
-        //std::cout << particleSystem.totalEnergy() << std::endl;
+        std::cout << particleSystem.totalEnergy() << std::endl;
         //file << t << "," << pos.getX() << "," << pos.getY() << "," << pos.getZ() << "\n";
 
         Animate(particleSystem, window, quadric);
