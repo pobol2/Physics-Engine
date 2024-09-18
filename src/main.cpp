@@ -12,14 +12,15 @@
 #include "Animate.h"
 #include "GravityForce.h"
 #include "SpringForce.h"
+#include "DragForce.h"
 
 int main() {
 
     System particleSystem;
 
     // Create some particles
-    Particle p1(Vector(1, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0), 1.0);
-    Particle p2(Vector(-1, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0), 1.0);
+    Particle p1(Vector(1, 0, 0), Vector(0, 3, 0), 1.0);
+    Particle p2(Vector(-1, 1, 0), Vector(0, 0, 0), 1.0);
 
     // Add particles to the system
     particleSystem.addParticle(p1);
@@ -27,11 +28,15 @@ int main() {
 
     // Gravity
     GravityForce gravity(9.81);
-    //particleSystem.addForce(gravity);
+    particleSystem.addForce(gravity);
 
     // Spring between particles 0 and 1, rest length 5, stiffness 100
     SpringForce spring(0, 1, 0, 100);  
     particleSystem.addForce(spring);
+
+    // Drag
+    DragForce drag(10);
+    particleSystem.addForce(drag);
 
     // Time step
     double deltaTime = 0.001;

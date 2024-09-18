@@ -2,10 +2,10 @@
 #include "Particle.h"
 
 // Constructors
-Particle::Particle() : m_position(Vector()), m_velocity(Vector()), m_acceleration(Vector()), m_force(Vector()), m_mass(1.0) {}
+Particle::Particle() : m_position(Vector()), m_velocity(Vector()), m_force(Vector()), m_mass(1.0) {}
 
-Particle::Particle(const Vector& position, const Vector& velocity, const Vector& acceleration, double mass)
-    : m_position(position), m_velocity(velocity), m_acceleration(acceleration), m_force(Vector()), m_mass(mass) {
+Particle::Particle(const Vector& position, const Vector& velocity, double mass)
+    : m_position(position), m_velocity(velocity), m_force(Vector()), m_mass(mass) {
     if (mass <= 0) {
         throw std::invalid_argument("Mass must be greater than zero");
     }
@@ -17,9 +17,6 @@ void Particle::setPosition(const Vector& position) { m_position = position; }
 
 Vector Particle::getVelocity() const { return m_velocity; }
 void Particle::setVelocity(const Vector& velocity) { m_velocity = velocity; }
-
-Vector Particle::getAcceleration() const { return m_acceleration; }
-void Particle::setAcceleration(const Vector& acceleration) { m_acceleration = acceleration; }
 
 Vector Particle::getForce() const { return m_force; }
 void Particle::setForce(const Vector& force) { m_force = force; }
@@ -68,7 +65,6 @@ void Particle::update(double deltaTime) {
 std::ostream& operator<<(std::ostream& os, const Particle& p) {
     os << "Position:\n" << p.m_position
        << "Velocity:\n" << p.m_velocity
-       << "Acceleration:\n" << p.m_acceleration
        << "Force:\n" << p.m_force
        << "Mass: " << p.m_mass;
     return os;

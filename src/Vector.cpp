@@ -62,7 +62,8 @@ double Vector::magnitude() const {
 Vector Vector::normalize() const {
     double mag = magnitude();
     if (mag == 0) {
-        throw std::invalid_argument("Cannot normalize a zero vector");
+        return *this;
+        //throw std::invalid_argument("Cannot normalize a zero vector");
     }
     return *this / mag;
 }
