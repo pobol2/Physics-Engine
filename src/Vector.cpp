@@ -1,5 +1,6 @@
 // Vector.cpp
 #include "Vector.h"
+#include <cmath>  // For sqrt function
 
 // Constructors
 Vector::Vector() : m_x(0), m_y(0), m_z(0) {}
@@ -52,7 +53,21 @@ double Vector::magnitudeSquared() const {
     return this->dot(*this);
 }
 
- // Cross product of two vectors
+// Calculate the magnitude (length) of the vector
+double Vector::magnitude() const {
+    return std::sqrt(magnitudeSquared());
+}
+
+// Return a normalized version of the vector (unit vector)
+Vector Vector::normalize() const {
+    double mag = magnitude();
+    if (mag == 0) {
+        throw std::invalid_argument("Cannot normalize a zero vector");
+    }
+    return *this / mag;
+}
+
+// Cross product of two vectors
 Vector Vector::cross(const Vector& v) const {
     double x = m_y * v.m_z - m_z * v.m_y;
     double y = m_z * v.m_x - m_x * v.m_z;

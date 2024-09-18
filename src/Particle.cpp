@@ -32,13 +32,6 @@ void Particle::setMass(double mass) {
     m_mass = mass;
 }
 
-// Add gravitational force
-void Particle::applyGravity() {
-    const double gravity = 9.81; // Define gravitational acceleration (m/s²)   
-    Vector gravityForce(0, -gravity * m_mass, 0); // Create a gravitational force vector
-    m_force = m_force + gravityForce;  // Add gravitational force to the current force
-}
-
 // Calculate kinetic energy
 double Particle::kineticEnergy() const {
     double speedSquared = m_velocity.magnitudeSquared();
@@ -60,24 +53,25 @@ double Particle::totalEnergy() const {
 void Particle::update(double deltaTime) {
 
     // k1
-    Vector k1_p = deltaTime * m_velocity;
-    Vector k1_v = deltaTime * m_force / m_mass;
+    Vector k1_p = m_velocity;
+    Vector k1_v = m_force / m_mass;
 
     // k2
-    Vector k2_p = deltaTime * (m_velocity + k1_v/2);
-    Vector k2_v = k1_v;
+    Vector k2_p = m_velocity + deltaTime * k1_v / 2;
+    Vector k2_v = m_force / m_mass;
 
     // k3
-    Vector k3_p = deltaTime * (m_velocity + k2_v/2);
-    Vector k3_v = k1_v;
+    Vector k3_p = m_velocity + deltaTime * k2_v/2;
+    Vector k3_v = m_force / m_mass;
 
     // k4
-    Vector k4_p = deltaTime * (m_velocity + k3_v);
-    Vector k4_v = k1_v;
+    Vector k4_p = m_velocity + deltaTime * k3_v;
+    Vector k4_v = m_force / m_mass;
+
 
     // Update position and velocity using RK4
-    m_position = m_position + (k1_p + 2 * k2_p + 2 * k3_p + k4_p) / 6.0;
-    m_velocity = m_velocity + (k1_v + 2 * k2_v + 2 * k3_v + k4_v) / 6.0;
+    m_position = m_position + deltaTime * (k1_p + 2 * k2_p + 2 * k3_p + k4_p) / 6.0;
+    m_velocity = m_velocity + deltaTime * (k1_v + 2 * k2_v + 2 * k3_v + k4_v) / 6.0;
 }
 
 

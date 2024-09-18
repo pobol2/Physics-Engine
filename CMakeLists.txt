@@ -12,8 +12,10 @@ set(PHYSICS_SOURCE
     ${PHYSICS_SOURCE_DIR}/Matrix.cpp
     ${PHYSICS_SOURCE_DIR}/Identity.cpp
     ${PHYSICS_SOURCE_DIR}/System.cpp
-    ${PHYSICS_SOURCE_DIR}/main.cpp
     ${PHYSICS_SOURCE_DIR}/Animate.cpp
+    ${PHYSICS_SOURCE_DIR}/GravityForce.cpp
+    ${PHYSICS_SOURCE_DIR}/SpringForce.cpp
+    ${PHYSICS_SOURCE_DIR}/main.cpp
 )
 set(PHYSICS_LIBRARIES_DIR
     libs

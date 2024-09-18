@@ -9,6 +9,6 @@
 
 std::tuple<GLFWwindow*, GLUquadric*> initAnimation();
 void endAnimation(GLFWwindow* window, GLUquadric* quadric);
-void Animate(GLFWwindow* window, GLUquadric* quadric, Vector pos);
+void Animate(System system, GLFWwindow* window, GLUquadric* quadric);
 
 #endif

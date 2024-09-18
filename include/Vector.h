@@ -35,6 +35,9 @@ public:
 
     // Overload the << operator
     friend std::ostream& operator<<(std::ostream& os, const Vector& v);
+
+    double magnitude() const;  // Method to get the magnitude of the vector
+    Vector normalize() const;  // Method to normalize the vector (unit vector)
 };
 
 #endif // VECTOR_H

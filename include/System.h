@@ -1,13 +1,16 @@
+// System.h
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
 #include <vector>
 #include "Particle.h"
+#include "Force.h"
 
 class System {
 private:
-    // TODO : Change for a custom made way to group particle 
+    // TODO : Change for a custom made way to group particle and forces
     std::vector<Particle> m_particles;
+    std::vector<const Force*> m_forces;
 
 public:
     // Add a particle to the system
@@ -16,8 +19,9 @@ public:
     // Update all particles in the system
     void update(double deltaTime);
 
-    // Apply gravity to all particles
-    void applyGravity(const Vector& gravity);
+    // Forces
+    void addForce(const Force& force);
+    void applyForces();
 
     // Get a reference to a particle
     Particle& getParticle(size_t index);

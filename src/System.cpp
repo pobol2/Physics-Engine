@@ -1,3 +1,4 @@
+// System.cpp
 #include "System.h"
 
 // Add a particle to the system
@@ -7,15 +8,25 @@ void System::addParticle(const Particle& particle) {
 
 // Update all particles in the system
 void System::update(double deltaTime) {
+    applyForces();
     for (Particle& particle : m_particles) {
         particle.update(deltaTime);
     }
 }
 
-// Apply gravity to all particles
-void System::applyGravity(const Vector& gravity) {
+void System::addForce(const Force& force) {
+    m_forces.push_back(&force);
+}
+
+void System::applyForces() {
+    // First, reset the forces on all particles
     for (Particle& particle : m_particles) {
-        particle.setForce(particle.getMass() * gravity);
+        particle.setForce(Vector(0, 0, 0));  // Reset force to zero
+    }
+
+    // Then, apply each force in the force list
+    for (const auto& force : m_forces) {
+        force->applyForce(*this);  // Apply forces to the system
     }
 }
 

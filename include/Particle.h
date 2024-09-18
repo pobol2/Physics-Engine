@@ -29,9 +29,6 @@ public:
     double getMass() const;
     void setMass(double mass);
 
-    // Apply gravity
-    void applyGravity();
-
     // Energy
     double kineticEnergy() const;
     double potentialEnergy() const;

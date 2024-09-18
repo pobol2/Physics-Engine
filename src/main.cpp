@@ -10,25 +10,34 @@
 #include "Particle.h"
 #include "System.h"
 #include "Animate.h"
+#include "GravityForce.h"
+#include "SpringForce.h"
 
 int main() {
 
     System particleSystem;
 
     // Create some particles
-    Particle p1(Vector(0, 0, 0), Vector(5, 0, 0), Vector(0, 0, 0), 1.0);
-    Particle p2(Vector(1, 1, 1), Vector(0, 1, 0), Vector(0, 0, 0), 2.0);
+    Particle p1(Vector(1, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0), 1.0);
+    Particle p2(Vector(-1, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0), 1.0);
 
     // Add particles to the system
     particleSystem.addParticle(p1);
     particleSystem.addParticle(p2);
 
-    // Apply gravity
-    Vector gravity(0, -9.81, 0);
-    particleSystem.applyGravity(gravity);
+    // Gravity
+    GravityForce gravity(9.81);
+    //particleSystem.addForce(gravity);
+
+    // Spring between particles 0 and 1, rest length 5, stiffness 100
+    SpringForce spring(0, 1, 0, 100);  
+    particleSystem.addForce(spring);
+
+    // Apply forces to particles
+    particleSystem.applyForces();
 
     // Time step
-    double deltaTime = 0.01;
+    double deltaTime = 0.001;
 
     // Simulation time
     double totalTime = 1;
@@ -42,12 +51,12 @@ int main() {
     // Simulate
     for (int i = 0; i <= totalTime/deltaTime; ++i) {
         particleSystem.update(deltaTime);
-        double t = i * deltaTime;
-        Vector pos = particleSystem.getParticle(0).getPosition();
-        std::cout << particleSystem.totalEnergy() << std::endl;
-        file << t << "," << pos.getX() << "," << pos.getY() << "," << pos.getZ() << "\n";
+        //double t = i * deltaTime;
+        //Vector pos = particleSystem.getParticle(0).getPosition();
+        //std::cout << particleSystem.totalEnergy() << std::endl;
+        //file << t << "," << pos.getX() << "," << pos.getY() << "," << pos.getZ() << "\n";
 
-        Animate(window, quadric, pos);
+        Animate(particleSystem, window, quadric);
     }
 
     endAnimation(window, quadric);
