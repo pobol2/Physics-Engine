@@ -29,7 +29,7 @@ public:
     // Energy
     double kineticEnergy() const;
 
-    // Update the particle's state based on Euler method
+    // Update the particle's state based on RK4 method
     void update(double deltaTime);
 
     // Overload the << operator

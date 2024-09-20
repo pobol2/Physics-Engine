@@ -11,7 +11,27 @@ void System::update(double deltaTime) {
     applyForces();
     for (Particle& particle : m_particles) {
         particle.update(deltaTime);
+        // Handle collisions with planes
+        handleCollisions(particle);
     }
+}
+
+void System::handleCollisions(Particle& particle) {
+    for (const Plane& plane : m_planes) {
+        if (plane.checkCollision(particle)) {
+            plane.resolveCollision(particle);
+        }
+    }
+}
+
+// Add a force to the system
+void System::addPlane(const Plane& plane) {
+    m_planes.push_back(plane);
+}
+
+// Get the planes in the system
+const std::vector<Plane>& System::getPlanes() const {
+    return m_planes;
 }
 
 // Add a force to the system

@@ -64,11 +64,11 @@ void setupLighting() {
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 }
 
-void setupMaterial() {
-    GLfloat mat_ambient[] = {1.0, 0.0, 1.0, 1.0}; // Blue
-    GLfloat mat_diffuse[] = {1.0, 0.0, 1.0, 1.0}; // Blue
-    GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0}; // White
-    GLfloat mat_shininess[] = {100.0}; // Shininess
+void setupPlaneMaterial() {
+    GLfloat mat_ambient[] = {1.0, 1.0, 1.0, 1.0}; // Light gray
+    GLfloat mat_diffuse[] = {0.0, 0.0, 0.0, 0.0};
+    GLfloat mat_specular[] = {0.0, 0.0, 0.0, 0.0};
+    GLfloat mat_shininess[] = {0.0};
 
     glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
@@ -76,6 +76,30 @@ void setupMaterial() {
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 }
 
+
+void setupParticleMaterial() {
+    GLfloat mat_ambient[] = {0.0, 0.0, 1.0, 1.0}; // Blue
+    GLfloat mat_diffuse[] = {0.0, 0.0, 1.0, 1.0};
+    GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
+    GLfloat mat_shininess[] = {100.0};
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+}
+
+void setupSpringMaterial() {
+    GLfloat mat_ambient[] = {1.0, 0.0, 1.0, 1.0}; // Magenta
+    GLfloat mat_diffuse[] = {0.0, 0.0, 0.0, 0.0};
+    GLfloat mat_specular[] = {0.0, 0.0, 0.0, 0.0};
+    GLfloat mat_shininess[] = {0.0};
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+}
 void setupBackground() {
     glClearColor(0.1, 0.1, 0.1, 1.0); // Dark gray background
 }
@@ -86,6 +110,7 @@ void drawSpring(const Vector& start, const Vector& end, int numCoils, float coil
     float length = (end - start).magnitude();
     float coilLength = length / numCoils;
 
+    glLineWidth(8.0f);
     glBegin(GL_LINE_STRIP);
     for (int i = 0; i <= segments; ++i) {
         float t = (float)i / segments; // Parameter from 0 to 1
@@ -95,7 +120,39 @@ void drawSpring(const Vector& start, const Vector& end, int numCoils, float coil
 
         // Calculate the sine wave for the spring
         float wave = coilRadius * sin(t * numCoils * 2.0f * M_PI);
-        glVertex3f(x, y + wave, z); // Offset y by the wave
+        //glVertex3f(x, y + wave, z); // Offset y by the wave
+        glVertex3f(x, y, z);
+    }
+    glEnd();
+}
+
+void drawPlane(const Plane& plane) {
+
+    Vector normal = plane.getNormal();  // Plane normal
+    Vector point = plane.getPoint();    // A point on the plane
+
+    // We need two vectors orthogonal to the normal to define the plane's surface
+    Vector tangent1, tangent2;
+
+    // Create two orthogonal vectors to the normal (basis vectors in the plane)
+    if (fabs(normal.getX()) > fabs(normal.getY())) {
+        tangent1 = Vector(normal.getZ(), 0, -normal.getX()).normalize();  // Arbitrary orthogonal vector
+    } else {
+        tangent1 = Vector(0, -normal.getZ(), normal.getY()).normalize();  // Arbitrary orthogonal vector
+    }
+    tangent2 = normal.cross(tangent1).normalize();  // Second orthogonal vector
+
+    glColor3f(1.0, 1.0, 1.0);
+    glLineWidth(4.0f);
+    glBegin(GL_LINES);
+    for (GLfloat i = -2.5; i <= 2.5; i += 0.1) {
+        Vector p1 = point + tangent1 * i + tangent2 * 2.5;
+        Vector p2 = point + tangent1 * i - tangent2 * 2.5;
+        glVertex3f(p1.getX(), p1.getY(), p1.getZ()); glVertex3f(p2.getX(), p2.getY(), p2.getZ());
+
+        Vector p3 = point + tangent2 * i + tangent1 * 2.5;
+        Vector p4 = point + tangent2 * i - tangent1 * 2.5;
+        glVertex3f(p3.getX(), p3.getY(), p3.getZ()); glVertex3f(p4.getX(), p4.getY(), p4.getZ());
     }
     glEnd();
 }
@@ -117,7 +174,6 @@ std::tuple<GLFWwindow*, GLUquadric*> initAnimation() {
     setupBackground();
 
     setupLighting();
-    setupMaterial();
 
     glShadeModel(GL_SMOOTH);  // Enable Smooth Shading
     glEnable(GL_DEPTH_TEST);  // Enable Depth Testing
@@ -172,6 +228,14 @@ void Animate(System system, GLFWwindow* window, GLUquadric* quadric) {
     glRotatef(camPitch, 1.0f, 0.0f, 0.0f);
     glRotatef(camYaw, 0.0f, 1.0f, 0.0f);
 
+    // Draw planes
+    const std::vector<Plane>& planes = system.getPlanes();
+    for (const Plane& plane : planes) {
+        setupPlaneMaterial();
+        drawPlane(plane); // 10x10 tiles, each 1 unit in size
+    }
+
+    // Draw springs
     const auto& forces = system.getForces();
     for (const Force* force : forces) {
         if (const SpringForce* springForce = dynamic_cast<const SpringForce*>(force)) {
@@ -179,7 +243,8 @@ void Animate(System system, GLFWwindow* window, GLUquadric* quadric) {
             springForce->getParticles(p1Index, p2Index);
             Vector start = system.getParticle(p1Index).getPosition();
             Vector end = system.getParticle(p2Index).getPosition();
-            drawSpring(start, end, 5, 0.1); // Draw spring with 5 coils and a radius of 0.1
+            setupSpringMaterial(); // Set spring material
+            drawSpring(start, end, 10, 0.05); // Draw spring with 5 coils and a radius of 0.1
         }
     }
 
@@ -190,6 +255,7 @@ void Animate(System system, GLFWwindow* window, GLUquadric* quadric) {
         glPushMatrix();
         glTranslatef(pos.getX(), pos.getY(), pos.getZ()); // Translate sphere
 
+        setupParticleMaterial(); // Set particle material
         gluSphere(quadric, 0.05, 50, 50); // Draw sphere
 
         glPopMatrix();
