@@ -5,11 +5,11 @@
 #include <iostream>
 
 void SpringForce::applyForce(System& system) const {
-    Particle& p1 = system.getParticle(m_particle1Index); // Get first particle
-    Particle& p2 = system.getParticle(m_particle2Index); // Get second particle
+    std::shared_ptr<Particle> p1 = system.getParticle(m_particle1Index); // Get first particle
+    std::shared_ptr<Particle> p2 = system.getParticle(m_particle2Index); // Get second particle
 
     // Compute displacement vector between the two particles
-    Vector displacement = p2.getPosition() - p1.getPosition();
+    Vector displacement = p2->getPosition() - p1->getPosition();
     
     // Calculate the current length of the spring
     double currentLength = displacement.magnitude();
@@ -24,23 +24,23 @@ void SpringForce::applyForce(System& system) const {
     Vector springForce = forceDirection * forceMagnitude;
 
     // Calculate relative velocity
-    Vector relativeVelocity = p2.getVelocity() - p1.getVelocity();
+    Vector relativeVelocity = p2->getVelocity() - p1->getVelocity();
 
     // Calculate damping force: F_damping = -c * (v2 - v1)
     double dampingMagnitude = -m_damping * relativeVelocity.dot(forceDirection);
     Vector dampingForce = forceDirection * dampingMagnitude;
 
-    p1.setForce(p1.getForce() - springForce - dampingForce); // Apply forces to particle 1
-    p2.setForce(p2.getForce() + springForce + dampingForce); // Apply equal and opposite forces to particle 2
+    p1->setForce(p1->getForce() - springForce - dampingForce); // Apply forces to particle 1
+    p2->setForce(p2->getForce() + springForce + dampingForce); // Apply equal and opposite forces to particle 2
 }
 
 double SpringForce::getPotentialEnergy(System& system) const {
 
-    Particle& p1 = system.getParticle(m_particle1Index); // Get first particle
-    Particle& p2 = system.getParticle(m_particle2Index); // Get second particle
+    std::shared_ptr<Particle> p1 = system.getParticle(m_particle1Index); // Get first particle
+    std::shared_ptr<Particle> p2 = system.getParticle(m_particle2Index); // Get second particle
 
     // Compute displacement vector between the two particles
-    Vector displacement = p2.getPosition() - p1.getPosition();
+    Vector displacement = p2->getPosition() - p1->getPosition();
     
     // Calculate the current length of the spring
     double currentLength = displacement.magnitude();

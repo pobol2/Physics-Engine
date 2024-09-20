@@ -3,9 +3,8 @@
 #include "System.h"
 
 void DragForce::applyForce(System& system) const {
-    for (size_t i = 0; i < system.size(); ++i) {
-        Particle& particle  = system.getParticle(i);
-        Vector unitVelocity = particle.getVelocity().normalize();
-        particle.setForce(particle.getForce() - m_cd * unitVelocity);
+    for (const auto& particlePtr : system.getParticles()) {
+        Vector unitVelocity = particlePtr->getVelocity().normalize();
+        particlePtr->setForce(particlePtr->getForce() - m_cd * unitVelocity);
     }
 }

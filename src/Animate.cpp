@@ -1,3 +1,4 @@
+// Animate.cpp
 #include <GLFW/glfw3.h>
 #include <GL/glu.h>
 #include <iostream>
@@ -143,7 +144,7 @@ void drawPlane(const Plane& plane) {
     tangent2 = normal.cross(tangent1).normalize();  // Second orthogonal vector
 
     glColor3f(1.0, 1.0, 1.0);
-    glLineWidth(4.0f);
+    glLineWidth(3.0f);
     glBegin(GL_LINES);
     for (GLfloat i = -2.5; i <= 2.5; i += 0.1) {
         Vector p1 = point + tangent1 * i + tangent2 * 2.5;
@@ -229,28 +230,26 @@ void Animate(System system, GLFWwindow* window, GLUquadric* quadric) {
     glRotatef(camYaw, 0.0f, 1.0f, 0.0f);
 
     // Draw planes
-    const std::vector<Plane>& planes = system.getPlanes();
-    for (const Plane& plane : planes) {
+    for (const auto& planePtr : system.getPlanes()) {
         setupPlaneMaterial();
-        drawPlane(plane); // 10x10 tiles, each 1 unit in size
+        drawPlane(*planePtr); // 10x10 tiles, each 1 unit in size
     }
 
     // Draw springs
-    const auto& forces = system.getForces();
-    for (const Force* force : forces) {
-        if (const SpringForce* springForce = dynamic_cast<const SpringForce*>(force)) {
+    for (const auto& force : system.getForces()) {
+        if (auto springForce = dynamic_cast<SpringForce*>(force.get())) {
             size_t p1Index, p2Index;
             springForce->getParticles(p1Index, p2Index);
-            Vector start = system.getParticle(p1Index).getPosition();
-            Vector end = system.getParticle(p2Index).getPosition();
+            Vector start = system.getParticle(p1Index)->getPosition();
+            Vector end = system.getParticle(p2Index)->getPosition();
             setupSpringMaterial(); // Set spring material
             drawSpring(start, end, 10, 0.05); // Draw spring with 5 coils and a radius of 0.1
         }
     }
 
-    for (size_t i = 0; i < system.size(); ++i) {
+    for (const auto& particlePtr : system.getParticles()) {
 
-        Vector pos = system.getParticle(i).getPosition();
+        Vector pos = particlePtr->getPosition();
 
         glPushMatrix();
         glTranslatef(pos.getX(), pos.getY(), pos.getZ()); // Translate sphere

@@ -1,3 +1,4 @@
+// Animate.h
 #ifndef ANIMATE_H
 #define ANIMATE_H
 
@@ -11,4 +12,4 @@ std::tuple<GLFWwindow*, GLUquadric*> initAnimation();
 void endAnimation(GLFWwindow* window, GLUquadric* quadric);
 void Animate(System system, GLFWwindow* window, GLUquadric* quadric);
 
-#endif
+#endif // ANIMATE_H

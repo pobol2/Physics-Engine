@@ -3,18 +3,16 @@
 #include "System.h"
 
 void GravityForce::applyForce(System& system) const {
-    for (size_t i = 0; i < system.size(); ++i) {
-        Particle& particle  = system.getParticle(i);
+    for (const auto& particlePtr : system.getParticles()) {
         Vector gravity(0, -m_gravity, 0);
-        particle.setForce(particle.getForce() + gravity * particle.getMass());
+        particlePtr->setForce(particlePtr->getForce() + gravity * particlePtr->getMass());
     }
 }
 
 double GravityForce::getPotentialEnergy(System& system) const {
     double PotentialEnergy = 0;
-    for (size_t i = 0; i < system.size(); ++i) {
-        Particle& particle = system.getParticle(i);
-        PotentialEnergy += particle.getMass() * m_gravity * particle.getPosition().getY();
+    for (const auto& particlePtr : system.getParticles()) {
+        PotentialEnergy += particlePtr->getMass() * m_gravity * particlePtr->getPosition().getY();
     }
     return PotentialEnergy;
 }

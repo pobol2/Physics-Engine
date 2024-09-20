@@ -3,30 +3,38 @@
 #define SYSTEM_H
 
 #include <vector>
+#include <memory>
 #include "Particle.h"
 #include "Force.h"
+#include "DragForce.h"
+#include "GravityForce.h"
+#include "SpringForce.h"
 #include "Plane.h"
 
 class System {
 private:
     // TODO : Change for a custom made way to group particle and forces
-    std::vector<Particle> m_particles;
-    std::vector<const Force*> m_forces;
-    std::vector<Plane> m_planes;
+    std::vector<std::shared_ptr<Particle>> m_particles;
+    std::vector<std::shared_ptr<Plane>> m_planes;
+    std::vector<std::shared_ptr<Force>> m_forces;
 
 public:
 
     // Getters and setters
-    Particle& getParticle(size_t index);
-    void addParticle(const Particle& particle);
-    const std::vector<const Force*>& getForces() const;
-    void addForce(const Force& force);
-    const std::vector<Plane>& getPlanes() const;
-    void addPlane(const Plane& Plane);
+    void addParticle(const std::shared_ptr<Particle>& particle);
+    void addParticle(const Vector& position, const Vector& velocity, double mass);
+    const std::vector<std::shared_ptr<Particle>>& getParticles() const;
+    std::shared_ptr<Particle> getParticle(size_t index) const;
 
-    // Get the number of particles in the system
-    size_t size() const;
-    
+    void addPlane(const std::shared_ptr<Plane>& plane);
+    void addPlane(const Vector& normal, const Vector& point);
+    const std::vector<std::shared_ptr<Plane>>& getPlanes() const;
+
+    void addDragForce(double cd);
+    void addGravityForce(double gravity);
+    void addSpringForce(size_t particle1Index, size_t particle2Index, double restLength, double stiffness, double damping);
+    std::vector<std::shared_ptr<Force>> getForces() const;
+
     // Add the force to each particle
     void applyForces();
 

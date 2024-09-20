@@ -17,6 +17,7 @@ set(PHYSICS_SOURCE
     ${PHYSICS_SOURCE_DIR}/SpringForce.cpp
     ${PHYSICS_SOURCE_DIR}/DragForce.cpp
     ${PHYSICS_SOURCE_DIR}/Plane.cpp
+    ${PHYSICS_SOURCE_DIR}/Demo.cpp
     ${PHYSICS_SOURCE_DIR}/main.cpp
 )
 set(PHYSICS_LIBRARIES_DIR
