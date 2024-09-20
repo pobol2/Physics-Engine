@@ -23,8 +23,15 @@ void SpringForce::applyForce(System& system) const {
     // Apply the spring force to both particles (equal and opposite forces)
     Vector springForce = forceDirection * forceMagnitude;
 
-    p1.setForce(p1.getForce() - springForce);      // Apply force to particle 1
-    p2.setForce(p2.getForce() + springForce);      // Apply equal and opposite force to particle 2
+    // Calculate relative velocity
+    Vector relativeVelocity = p2.getVelocity() - p1.getVelocity();
+
+    // Calculate damping force: F_damping = -c * (v2 - v1)
+    double dampingMagnitude = -m_damping * relativeVelocity.dot(forceDirection);
+    Vector dampingForce = forceDirection * dampingMagnitude;
+
+    p1.setForce(p1.getForce() - springForce - dampingForce); // Apply forces to particle 1
+    p2.setForce(p2.getForce() + springForce + dampingForce); // Apply equal and opposite forces to particle 2
 }
 
 double SpringForce::getPotentialEnergy(System& system) const {

@@ -14,10 +14,12 @@ void System::update(double deltaTime) {
     }
 }
 
+// Add a force to the system
 void System::addForce(const Force& force) {
     m_forces.push_back(&force);
 }
 
+// Add the force to each particle
 void System::applyForces() {
     // First, reset the forces on all particles
     for (Particle& particle : m_particles) {
@@ -28,6 +30,11 @@ void System::applyForces() {
     for (const Force* force : m_forces) {
         force->applyForce(*this);  // Apply forces to the system
     }
+}
+
+// Get a reference to the list of forces in the system
+const std::vector<const Force*>& System::getForces() const {
+    return m_forces;
 }
 
 // Get a reference to a particle

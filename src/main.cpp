@@ -19,50 +19,67 @@ int main() {
     System particleSystem;
 
     // Create some particles
-    Particle p1(Vector(1, 0, 0), Vector(0, 3, 0), 1.0);
-    Particle p2(Vector(-1, 1, 0), Vector(0, 0, 0), 1.0);
+    Particle p1(Vector(1, 0, 0), Vector(0, 0, 0), 1.0);
+    Particle p2(Vector(-1, 0, 0), Vector(0, 0, 0), 1.0);
+    Particle p3(Vector(0, 2, 0), Vector(0, 0, 0), 1.0);
+    Particle p4(Vector(0, 1, 1), Vector(0, 0, 0), 1.0);
+
 
     // Add particles to the system
     particleSystem.addParticle(p1);
     particleSystem.addParticle(p2);
+    particleSystem.addParticle(p3);
+    particleSystem.addParticle(p4);
 
     // Gravity
     GravityForce gravity(9.81);
-    particleSystem.addForce(gravity);
+    //particleSystem.addForce(gravity);
 
-    // Spring between particles 0 and 1, rest length 5, stiffness 100
-    SpringForce spring(0, 1, 0, 100);  
-    particleSystem.addForce(spring);
+    // Spring between particles 0 and 1, rest length 5, stiffness 100, damping
+    SpringForce spring1(0, 1, 2, 100, 5);
+    SpringForce spring2(0, 2, 1.4, 100, 5);
+    SpringForce spring3(1, 2, 1.4, 100, 5);
+    particleSystem.addForce(spring1);
+    particleSystem.addForce(spring2);
+    particleSystem.addForce(spring3);
 
     // Drag
-    DragForce drag(10);
-    particleSystem.addForce(drag);
+    DragForce drag(1);
+    //particleSystem.addForce(drag);
 
     // Time step
-    double deltaTime = 0.001;
+    double stepTime = 0.000001; // Physics update interval
+    double frameTime = 1.0 / 60.0; // Frame time for 60 FPS
 
     // Simulation time
-    double totalTime = 1;
-
-    // Open a file to write the data
-    std::ofstream file("./out/simulation_results.csv");
-    file << "Time,X_Position,Y_Position,Z_Position\n";
+    double totalTime = 2;
 
     auto [window, quadric] =  initAnimation();
 
-    // Simulate
-    for (int i = 0; i <= totalTime/deltaTime; ++i) {
-        particleSystem.update(deltaTime);
-        //double t = i * deltaTime;
-        //Vector pos = particleSystem.getParticle(0).getPosition();
-        std::cout << particleSystem.totalEnergy() << std::endl;
-        //file << t << "," << pos.getX() << "," << pos.getY() << "," << pos.getZ() << "\n";
+    // Start the timer
+    double currentTime = glfwGetTime();
 
+    // Simulate and animate
+    while (!glfwWindowShouldClose(window)) {
+
+        double startTime = currentTime;
+        
+        // Update the physics simulation as fast as possible
+        while (currentTime - startTime < frameTime) {
+            particleSystem.update(stepTime);
+            currentTime = glfwGetTime();
+            totalTime -= stepTime;
+        }
+
+        // Render the frame
         Animate(particleSystem, window, quadric);
+
+        if (totalTime <= 0) {
+            break;
+        }
     }
 
     endAnimation(window, quadric);
-    file.close();
 
     return 0;
 }

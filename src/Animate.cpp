@@ -6,6 +6,48 @@
 
 #include "System.h"
 #include "Vector.h"
+#include "SpringForce.h"
+
+const float ZOOM_SENSITIVITY = 0.5f;
+const float ROTATION_SENSITIVITY = 0.5f;
+const float TRANSLATION_SENSITIVITY = 0.01f;
+
+float camDistance = 5.0f;
+float camYaw = 0.0f;
+float camPitch = 0.0f;
+float camX = 0.0f, camY = 0.0f;
+
+bool leftMouseButtonDown = false;
+bool rightMouseButtonDown = false;
+double lastMouseX, lastMouseY;
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+    camDistance -= yoffset * ZOOM_SENSITIVITY;
+    if (camDistance < 0.0f) camDistance = 0.0f; // Prevent zooming too close
+    if (camDistance > 50.0f) camDistance = 50.0f; // Prevent zooming too far
+}
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT) {
+        leftMouseButtonDown = (action == GLFW_PRESS);
+    } else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+        rightMouseButtonDown = (action == GLFW_PRESS);
+    }
+}
+
+void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
+    if (leftMouseButtonDown) {
+        camYaw += (xpos - lastMouseX) * ROTATION_SENSITIVITY;
+        camPitch += (ypos - lastMouseY) * ROTATION_SENSITIVITY;
+    } else if (rightMouseButtonDown) {
+        camX += (xpos - lastMouseX) * TRANSLATION_SENSITIVITY;
+        camY -= (ypos - lastMouseY) * TRANSLATION_SENSITIVITY;
+    }
+    
+    lastMouseX = xpos;
+    lastMouseY = ypos;
+}
+
 
 void setupLighting() {
     glEnable(GL_LIGHTING);
@@ -23,8 +65,8 @@ void setupLighting() {
 }
 
 void setupMaterial() {
-    GLfloat mat_ambient[] = {0.0, 0.0, 1.0, 1.0}; // Blue
-    GLfloat mat_diffuse[] = {0.0, 0.0, 1.0, 1.0}; // Blue
+    GLfloat mat_ambient[] = {1.0, 0.0, 1.0, 1.0}; // Blue
+    GLfloat mat_diffuse[] = {1.0, 0.0, 1.0, 1.0}; // Blue
     GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0}; // White
     GLfloat mat_shininess[] = {100.0}; // Shininess
 
@@ -63,7 +105,7 @@ std::tuple<GLFWwindow*, GLUquadric*> initAnimation() {
         std::cerr << "Failed to initialize GLFW" << std::endl;
     }
 
-    GLFWwindow* window = glfwCreateWindow(1200, 800, "Physics Engine", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(1200, 800, "3D Camera Movement", NULL, NULL);
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -71,12 +113,6 @@ std::tuple<GLFWwindow*, GLUquadric*> initAnimation() {
 
     glfwMakeContextCurrent(window);
     glEnable(GL_DEPTH_TEST);
-
-    // Set up projection and view matrices
-    glMatrixMode(GL_PROJECTION);
-    gluPerspective(45.0, 1200.0 / 800.0, 0.1, 100.0);
-    glMatrixMode(GL_MODELVIEW);
-    gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
     setupBackground();
 
@@ -86,6 +122,23 @@ std::tuple<GLFWwindow*, GLUquadric*> initAnimation() {
     glShadeModel(GL_SMOOTH);  // Enable Smooth Shading
     glEnable(GL_DEPTH_TEST);  // Enable Depth Testing
     glEnable(GL_MULTISAMPLE); // Add Anti-Aliasing
+
+    // Set the initial perspective
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45.0, 1200.0 / 800.0, 0.1, 100.0);
+
+    // Set the initial view
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(0.0, 0.0, camDistance, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+    glfwMakeContextCurrent(window);
+
+    // Set callbacks
+    glfwSetScrollCallback(window, scroll_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
+    glfwSetCursorPosCallback(window, cursor_position_callback);
 
     GLUquadric* quadric = gluNewQuadric();
 
@@ -102,12 +155,32 @@ void endAnimation(GLFWwindow* window, GLUquadric* quadric) {
 
 void Animate(System system, GLFWwindow* window, GLUquadric* quadric) {
 
+    // Clear buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (system.size() >= 2) {
-        Vector start = system.getParticle(0).getPosition();
-        Vector end = system.getParticle(1).getPosition();
-        drawSpring(start, end, 5, 0.1f); // Draw spring with 5 coils and a radius of 0.1
+    // Set the model-view matrix
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    // Translate the camera
+    glTranslatef(camX, camY, -camDistance+5.0f);
+
+    // Move the camera to look at the origin
+    glTranslatef(0.0f, 0.0f, -5.0f);
+
+    // Apply rotations
+    glRotatef(camPitch, 1.0f, 0.0f, 0.0f);
+    glRotatef(camYaw, 0.0f, 1.0f, 0.0f);
+
+    const auto& forces = system.getForces();
+    for (const Force* force : forces) {
+        if (const SpringForce* springForce = dynamic_cast<const SpringForce*>(force)) {
+            size_t p1Index, p2Index;
+            springForce->getParticles(p1Index, p2Index);
+            Vector start = system.getParticle(p1Index).getPosition();
+            Vector end = system.getParticle(p2Index).getPosition();
+            drawSpring(start, end, 5, 0.1); // Draw spring with 5 coils and a radius of 0.1
+        }
     }
 
     for (size_t i = 0; i < system.size(); ++i) {

@@ -23,6 +23,9 @@ public:
     void addForce(const Force& force);
     void applyForces();
 
+    // Get a reference to the list of forces in the system
+    const std::vector<const Force*>& getForces() const;
+    
     // Get a reference to a particle
     Particle& getParticle(size_t index);
     
