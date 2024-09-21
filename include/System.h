@@ -22,12 +22,12 @@ public:
 
     // Getters and setters
     void addParticle(const std::shared_ptr<Particle>& particle);
-    void addParticle(const Vector& position, const Vector& velocity, double mass);
+    void addParticle(const Vector3& position, const Vector3& velocity, double mass);
     const std::vector<std::shared_ptr<Particle>>& getParticles() const;
     std::shared_ptr<Particle> getParticle(size_t index) const;
 
     void addPlane(const std::shared_ptr<Plane>& plane);
-    void addPlane(const Vector& normal, const Vector& point);
+    void addPlane(const Vector3& normal, const Vector3& point);
     const std::vector<std::shared_ptr<Plane>>& getPlanes() const;
 
     void addDragForce(double cd);

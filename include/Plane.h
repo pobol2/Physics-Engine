@@ -2,24 +2,24 @@
 #ifndef PLANE_H
 #define PLANE_H
 
-#include "Vector.h"
+#include "Vector3.h"
 #include "Particle.h"
 
 class Plane {
 private:
-    Vector m_normal; // Normal vector of the plane
-    Vector m_point; // Point on the plane
+    Vector3 m_normal; // Normal vector of the plane
+    Vector3 m_point; // Point on the plane
 public:
 
     // Constructors
     Plane();
-    Plane(const Vector& m_normal, const Vector& m_point);
+    Plane(const Vector3& m_normal, const Vector3& m_point);
 
     // Getters and setters
-    Vector getNormal() const;
-    void setNormal(const Vector& normal);
-    Vector getPoint() const;
-    void setPoint(const Vector& point);
+    Vector3 getNormal() const;
+    void setNormal(const Vector3& normal);
+    Vector3 getPoint() const;
+    void setPoint(const Vector3& point);
 
     // Function to check if a particle collides with the plane
     bool checkCollision(const Particle& particle) const;

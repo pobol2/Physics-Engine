@@ -2,11 +2,10 @@
 #include <iostream>
 
 #include <GLFW/glfw3.h>
-#include <GL/glu.h>
 #include <cmath> // For sin function
 #include <chrono> // For execution time
 
-#include "Vector.h"
+#include "Vector3.h"
 #include "Particle.h"
 #include "Plane.h"
 #include "System.h"
@@ -17,19 +16,23 @@
 
 #include "Demo.h"
 
+#include "VectorN.h"
+#include "MatrixN.h"
+
+
 int main() {
 
     System system;
 
-    // Add a cube (system, position, orientation, halfSize, K, C)
-    Cube(system, Vector(1, 1, 0), Vector(0, 0, 0), 0.4, 50, 5);
-    Cube(system, Vector(1, 1, 1.5), Vector(0, 0, 0), 0.4, 50, 5);
-    Cube(system, Vector(1, 1, -1.5), Vector(0, 0, 0), 0.4, 50, 5);
+    // Add some cubes (system, position, orientation, halfSize, K, C)
+    Cube(system, Vector3(1, 1, 0), Vector3(0, 0, 0), 0.4, 50, 5);
+    Cube(system, Vector3(1, 1, 1.5), Vector3(0, 0, 0), 0.4, 50, 5);
+    Cube(system, Vector3(1, 1, -1.5), Vector3(0, 0, 0), 0.4, 50, 5);
     
     // Create the floor plane
     double angle = 0.1;
-    system.addPlane(Vector(sin(angle), cos(angle), 0), Vector(0, 0, 0));
-    system.addPlane(Vector(-1, 0, 0), Vector(2.5*cos(angle), 2.5*(1-sin(angle)), 0));
+    system.addPlane(Vector3(sin(angle), cos(angle), 0), Vector3(0, 0, 0));
+    system.addPlane(Vector3(-1, 0, 0), Vector3(2.5*cos(angle), 2.5*(1-sin(angle)), 0));
 
     // Gravity
     system.addGravityForce(9.81);
@@ -38,7 +41,7 @@ int main() {
     system.addDragForce(1);
 
     // Time step
-    double stepTime = 0.00001; // Physics update interval
+    double stepTime = 0.0001; // Physics update interval
     double frameTime = 1.0 / 60.0; // Frame time for 60 FPS
 
     // Simulation time

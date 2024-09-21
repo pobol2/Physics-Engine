@@ -7,10 +7,7 @@ set(PHYSICS_SOURCE_DIR
     src
 )
 set(PHYSICS_SOURCE
-    ${PHYSICS_SOURCE_DIR}/Vector.cpp
     ${PHYSICS_SOURCE_DIR}/Particle.cpp
-    ${PHYSICS_SOURCE_DIR}/Matrix.cpp
-    ${PHYSICS_SOURCE_DIR}/Identity.cpp
     ${PHYSICS_SOURCE_DIR}/System.cpp
     ${PHYSICS_SOURCE_DIR}/Animate.cpp
     ${PHYSICS_SOURCE_DIR}/GravityForce.cpp
@@ -26,6 +23,10 @@ set(PHYSICS_LIBRARIES_DIR
 set(PHYSICS_LIBRARIES
     glfw
 )
+
+# gprof
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pg")
 
 # Specify include directories
 include_directories(include)

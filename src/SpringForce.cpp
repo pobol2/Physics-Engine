@@ -9,7 +9,7 @@ void SpringForce::applyForce(System& system) const {
     std::shared_ptr<Particle> p2 = system.getParticle(m_particle2Index); // Get second particle
 
     // Compute displacement vector between the two particles
-    Vector displacement = p2->getPosition() - p1->getPosition();
+    Vector3 displacement = p2->getPosition() - p1->getPosition();
     
     // Calculate the current length of the spring
     double currentLength = displacement.magnitude();
@@ -18,17 +18,17 @@ void SpringForce::applyForce(System& system) const {
     double forceMagnitude = -m_stiffness * (currentLength - m_restLength);
 
     // Normalize the displacement vector to get the direction of the force
-    Vector forceDirection = displacement.normalize();
+    Vector3 forceDirection = displacement.normalize();
 
     // Apply the spring force to both particles (equal and opposite forces)
-    Vector springForce = forceDirection * forceMagnitude;
+    Vector3 springForce = forceDirection * forceMagnitude;
 
     // Calculate relative velocity
-    Vector relativeVelocity = p2->getVelocity() - p1->getVelocity();
+    Vector3 relativeVelocity = p2->getVelocity() - p1->getVelocity();
 
     // Calculate damping force: F_damping = -c * (v2 - v1)
     double dampingMagnitude = -m_damping * relativeVelocity.dot(forceDirection);
-    Vector dampingForce = forceDirection * dampingMagnitude;
+    Vector3 dampingForce = forceDirection * dampingMagnitude;
 
     p1->setForce(p1->getForce() - springForce - dampingForce); // Apply forces to particle 1
     p2->setForce(p2->getForce() + springForce + dampingForce); // Apply equal and opposite forces to particle 2
@@ -40,7 +40,7 @@ double SpringForce::getPotentialEnergy(System& system) const {
     std::shared_ptr<Particle> p2 = system.getParticle(m_particle2Index); // Get second particle
 
     // Compute displacement vector between the two particles
-    Vector displacement = p2->getPosition() - p1->getPosition();
+    Vector3 displacement = p2->getPosition() - p1->getPosition();
     
     // Calculate the current length of the spring
     double currentLength = displacement.magnitude();

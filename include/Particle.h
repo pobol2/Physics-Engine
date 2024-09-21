@@ -2,27 +2,27 @@
 #ifndef PARTICLE_H
 #define PARTICLE_H
 
-#include "Vector.h"
+#include "Vector3.h"
 
 class Particle {
 private:
-    Vector m_position;
-    Vector m_velocity;
-    Vector m_force;        // Net force acting on the particle
+    Vector3 m_position;
+    Vector3 m_velocity;
+    Vector3 m_force;        // Net force acting on the particle
     double m_mass;         // Mass of the particle
 
 public:
     // Constructors
     Particle();
-    Particle(const Vector& position, const Vector& velocity = Vector(), double mass = 1.0);
+    Particle(const Vector3& position, const Vector3& velocity = Vector3(), double mass = 1.0);
 
     // Getters and setters
-    Vector getPosition() const;
-    void setPosition(const Vector& position);
-    Vector getVelocity() const;
-    void setVelocity(const Vector& velocity);
-    Vector getForce() const;
-    void setForce(const Vector& force);
+    Vector3 getPosition() const;
+    void setPosition(const Vector3& position);
+    Vector3 getVelocity() const;
+    void setVelocity(const Vector3& velocity);
+    Vector3 getForce() const;
+    void setForce(const Vector3& force);
     double getMass() const;
     void setMass(double mass);
 

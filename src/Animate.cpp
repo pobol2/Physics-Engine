@@ -6,7 +6,7 @@
 #include <tuple>
 
 #include "System.h"
-#include "Vector.h"
+#include "Vector3.h"
 #include "SpringForce.h"
 
 const float ZOOM_SENSITIVITY = 0.5f;
@@ -105,7 +105,7 @@ void setupBackground() {
     glClearColor(0.1, 0.1, 0.1, 1.0); // Dark gray background
 }
 
-void drawSpring(const Vector& start, const Vector& end, int numCoils, float coilRadius) {
+void drawSpring(const Vector3& start, const Vector3& end, int numCoils, float coilRadius) {
     // Number of segments to represent the spring
     int segments = numCoils * 20; // More segments for a smoother spring
     float length = (end - start).magnitude();
@@ -129,17 +129,17 @@ void drawSpring(const Vector& start, const Vector& end, int numCoils, float coil
 
 void drawPlane(const Plane& plane) {
 
-    Vector normal = plane.getNormal();  // Plane normal
-    Vector point = plane.getPoint();    // A point on the plane
+    Vector3 normal = plane.getNormal();  // Plane normal
+    Vector3 point = plane.getPoint();    // A point on the plane
 
     // We need two vectors orthogonal to the normal to define the plane's surface
-    Vector tangent1, tangent2;
+    Vector3 tangent1, tangent2;
 
     // Create two orthogonal vectors to the normal (basis vectors in the plane)
     if (fabs(normal.getX()) > fabs(normal.getY())) {
-        tangent1 = Vector(normal.getZ(), 0, -normal.getX()).normalize();  // Arbitrary orthogonal vector
+        tangent1 = Vector3(normal.getZ(), 0, -normal.getX()).normalize();  // Arbitrary orthogonal vector
     } else {
-        tangent1 = Vector(0, -normal.getZ(), normal.getY()).normalize();  // Arbitrary orthogonal vector
+        tangent1 = Vector3(0, -normal.getZ(), normal.getY()).normalize();  // Arbitrary orthogonal vector
     }
     tangent2 = normal.cross(tangent1).normalize();  // Second orthogonal vector
 
@@ -147,12 +147,12 @@ void drawPlane(const Plane& plane) {
     glLineWidth(3.0f);
     glBegin(GL_LINES);
     for (GLfloat i = -2.5; i <= 2.5; i += 0.1) {
-        Vector p1 = point + tangent1 * i + tangent2 * 2.5;
-        Vector p2 = point + tangent1 * i - tangent2 * 2.5;
+        Vector3 p1 = point + tangent1 * i + tangent2 * 2.5;
+        Vector3 p2 = point + tangent1 * i - tangent2 * 2.5;
         glVertex3f(p1.getX(), p1.getY(), p1.getZ()); glVertex3f(p2.getX(), p2.getY(), p2.getZ());
 
-        Vector p3 = point + tangent2 * i + tangent1 * 2.5;
-        Vector p4 = point + tangent2 * i - tangent1 * 2.5;
+        Vector3 p3 = point + tangent2 * i + tangent1 * 2.5;
+        Vector3 p4 = point + tangent2 * i - tangent1 * 2.5;
         glVertex3f(p3.getX(), p3.getY(), p3.getZ()); glVertex3f(p4.getX(), p4.getY(), p4.getZ());
     }
     glEnd();
@@ -240,8 +240,8 @@ void Animate(System system, GLFWwindow* window, GLUquadric* quadric) {
         if (auto springForce = dynamic_cast<SpringForce*>(force.get())) {
             size_t p1Index, p2Index;
             springForce->getParticles(p1Index, p2Index);
-            Vector start = system.getParticle(p1Index)->getPosition();
-            Vector end = system.getParticle(p2Index)->getPosition();
+            Vector3 start = system.getParticle(p1Index)->getPosition();
+            Vector3 end = system.getParticle(p2Index)->getPosition();
             setupSpringMaterial(); // Set spring material
             drawSpring(start, end, 10, 0.05); // Draw spring with 5 coils and a radius of 0.1
         }
@@ -249,7 +249,7 @@ void Animate(System system, GLFWwindow* window, GLUquadric* quadric) {
 
     for (const auto& particlePtr : system.getParticles()) {
 
-        Vector pos = particlePtr->getPosition();
+        Vector3 pos = particlePtr->getPosition();
 
         glPushMatrix();
         glTranslatef(pos.getX(), pos.getY(), pos.getZ()); // Translate sphere

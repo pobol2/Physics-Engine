@@ -3,15 +3,15 @@
 #include <iostream>
 
 // Constructors
-Plane::Plane() : m_normal(Vector()), m_point(Vector()) {}
-Plane::Plane(const Vector& normal, const Vector& point) :  m_normal(normal), m_point(point) {}
+Plane::Plane() : m_normal(Vector3()), m_point(Vector3()) {}
+Plane::Plane(const Vector3& normal, const Vector3& point) :  m_normal(normal), m_point(point) {}
 
 // Getters and setters
-Vector Plane::getNormal() const { return m_normal; }
-void Plane::setNormal(const Vector& normal) { m_normal = normal; }
+Vector3 Plane::getNormal() const { return m_normal; }
+void Plane::setNormal(const Vector3& normal) { m_normal = normal; }
 
-Vector Plane::getPoint() const { return m_point; }
-void Plane::setPoint(const Vector& point) { m_point = point; }
+Vector3 Plane::getPoint() const { return m_point; }
+void Plane::setPoint(const Vector3& point) { m_point = point; }
 
 bool Plane::checkCollision(const Particle& particle) const {
     double distanceToPlane = (particle.getPosition() - m_point).dot(m_normal);
@@ -19,9 +19,9 @@ bool Plane::checkCollision(const Particle& particle) const {
 }
 
 void Plane::resolveCollision(Particle& particle) const {
-    Vector normalVelocity = particle.getVelocity().dot(m_normal) * m_normal;
-    Vector tangentialVelocity = particle.getVelocity() - normalVelocity;
-    Vector newVelocity = tangentialVelocity - normalVelocity; // Elastic collision
+    Vector3 normalVelocity = particle.getVelocity().dot(m_normal) * m_normal;
+    Vector3 tangentialVelocity = particle.getVelocity() - normalVelocity;
+    Vector3 newVelocity = tangentialVelocity - normalVelocity; // Elastic collision
 
     particle.setVelocity(newVelocity);
 }

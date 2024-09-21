@@ -3,7 +3,7 @@
 #define SPRING_FORCE_H
 
 #include "Force.h"
-#include "Vector.h"
+#include "Vector3.h"
 #include "System.h"
 
 class SpringForce : public Force {

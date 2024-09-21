@@ -6,7 +6,7 @@
 #include <GL/glu.h>
 #include <tuple>
 
-#include "Vector.h"
+#include "Vector3.h"
 
 std::tuple<GLFWwindow*, GLUquadric*> initAnimation();
 void endAnimation(GLFWwindow* window, GLUquadric* quadric);

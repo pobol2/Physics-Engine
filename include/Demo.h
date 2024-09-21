@@ -2,10 +2,10 @@
 #ifndef DEMO_H
 #define DEMO_H
 
-#include "Vector.h"
+#include "Vector3.h"
 
 class System; // Forward declaration of System
 
-void Cube(System& system, Vector position, Vector orientation, double halfSize, double K, double C);
+void Cube(System& system, Vector3 position, Vector3 orientation, double halfSize, double K, double C);
 
 #endif // DEMO_H

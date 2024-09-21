@@ -9,7 +9,7 @@ void System::addParticle(const std::shared_ptr<Particle>& particle) {
 }
 
 // Method to add a particles to the list using position, velocity, and mass
-void System::addParticle(const Vector& position, const Vector& velocity, double mass) {
+void System::addParticle(const Vector3& position, const Vector3& velocity, double mass) {
     addParticle(std::make_shared<Particle>(position, velocity, mass));
 }
 
@@ -21,7 +21,7 @@ const std::vector<std::shared_ptr<Particle>>& System::getParticles() const {
 // Method to get a Particle by index
 std::shared_ptr<Particle> System::getParticle(size_t index) const {
     if (index >= m_particles.size()) {
-        return nullptr; // Or throw an exception if preferred
+        throw std::out_of_range("Index out of range: Invalid particle index.");
     }
     return m_particles[index]; // Return the shared_ptr to the Particle
 }
@@ -34,7 +34,7 @@ void System::addPlane(const std::shared_ptr<Plane>& plane) {
 }
 
 // Method to add a Plane to the list using normal and point
-void System::addPlane(const Vector& normal, const Vector& point) {
+void System::addPlane(const Vector3& normal, const Vector3& point) {
     addPlane(std::make_shared<Plane>(normal, point));
 }
 
@@ -71,7 +71,7 @@ std::vector<std::shared_ptr<Force>> System::getForces() const {
 void System::applyForces() {
     // First, reset the forces on all particles
     for (const auto& particlePtr : m_particles) {
-        particlePtr->setForce(Vector(0, 0, 0));  // Reset force to zero
+        particlePtr->setForce(Vector3(0, 0, 0));  // Reset force to zero
     }
 
     // Then, apply each force in the force list

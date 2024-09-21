@@ -5,21 +5,21 @@
 #include "Demo.h"
 #include "System.h"
 #include "SpringForce.h"
-#include "Vector.h"
+#include "Vector3.h"
 #include "Particle.h"
 
-void Cube(System& system, Vector position, Vector orientation, double halfSize, double K, double C) {
+void Cube(System& system, Vector3 position, Vector3 orientation, double halfSize, double K, double C) {
 
     // Define the initial vertices of the cube centered at the origin
-    std::vector<Vector> vertices = {
-        Vector( halfSize,  halfSize,  halfSize), // 0
-        Vector( halfSize,  halfSize, -halfSize), // 1
-        Vector( halfSize, -halfSize, -halfSize), // 2
-        Vector( halfSize, -halfSize,  halfSize), // 3
-        Vector(-halfSize,  halfSize,  halfSize), // 4
-        Vector(-halfSize,  halfSize, -halfSize), // 5
-        Vector(-halfSize, -halfSize, -halfSize), // 6
-        Vector(-halfSize, -halfSize,  halfSize)  // 7
+    std::vector<Vector3> vertices = {
+        Vector3( halfSize,  halfSize,  halfSize), // 0
+        Vector3( halfSize,  halfSize, -halfSize), // 1
+        Vector3( halfSize, -halfSize, -halfSize), // 2
+        Vector3( halfSize, -halfSize,  halfSize), // 3
+        Vector3(-halfSize,  halfSize,  halfSize), // 4
+        Vector3(-halfSize,  halfSize, -halfSize), // 5
+        Vector3(-halfSize, -halfSize, -halfSize), // 6
+        Vector3(-halfSize, -halfSize,  halfSize)  // 7
     };
 
     // Store the particle IDs for this cube
@@ -37,7 +37,7 @@ void Cube(System& system, Vector position, Vector orientation, double halfSize, 
         vertex = vertex + position;
 
         // Add particle to the system and store its ID
-        system.addParticle(vertex, Vector(0, 0, 0), 1.0);
+        system.addParticle(vertex, Vector3(0, 0, 0), 1.0);
         particleIDs.push_back(system.getParticles().size() - 1); // Get the latest particle index
     }
 

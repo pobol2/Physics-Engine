@@ -2,24 +2,24 @@
 #include "Particle.h"
 
 // Constructors
-Particle::Particle() : m_position(Vector()), m_velocity(Vector()), m_force(Vector()), m_mass(1.0) {}
+Particle::Particle() : m_position(Vector3()), m_velocity(Vector3()), m_force(Vector3()), m_mass(1.0) {}
 
-Particle::Particle(const Vector& position, const Vector& velocity, double mass)
-    : m_position(position), m_velocity(velocity), m_force(Vector()), m_mass(mass) {
+Particle::Particle(const Vector3& position, const Vector3& velocity, double mass)
+    : m_position(position), m_velocity(velocity), m_force(Vector3()), m_mass(mass) {
     if (mass <= 0) {
         throw std::invalid_argument("Mass must be greater than zero");
     }
 }
 
 // Getters and setters
-Vector Particle::getPosition() const { return m_position; }
-void Particle::setPosition(const Vector& position) { m_position = position; }
+Vector3 Particle::getPosition() const { return m_position; }
+void Particle::setPosition(const Vector3& position) { m_position = position; }
 
-Vector Particle::getVelocity() const { return m_velocity; }
-void Particle::setVelocity(const Vector& velocity) { m_velocity = velocity; }
+Vector3 Particle::getVelocity() const { return m_velocity; }
+void Particle::setVelocity(const Vector3& velocity) { m_velocity = velocity; }
 
-Vector Particle::getForce() const { return m_force; }
-void Particle::setForce(const Vector& force) { m_force = force; }
+Vector3 Particle::getForce() const { return m_force; }
+void Particle::setForce(const Vector3& force) { m_force = force; }
 
 double Particle::getMass() const { return m_mass; }
 void Particle::setMass(double mass) { 
@@ -35,31 +35,13 @@ double Particle::kineticEnergy() const {
     return 0.5 * m_mass * speedSquared;
 }
 
-// Update the particle's state based on RK4 method
+// Update the particle's state based on Euler method
 void Particle::update(double deltaTime) {
 
-    // k1
-    Vector k1_p = m_velocity;
-    Vector k1_v = m_force / m_mass;
-
-    // k2
-    Vector k2_p = m_velocity + deltaTime * k1_v / 2;
-    Vector k2_v = m_force / m_mass;
-
-    // k3
-    Vector k3_p = m_velocity + deltaTime * k2_v/2;
-    Vector k3_v = m_force / m_mass;
-
-    // k4
-    Vector k4_p = m_velocity + deltaTime * k3_v;
-    Vector k4_v = m_force / m_mass;
-
-
-    // Update position and velocity using RK4
-    m_position = m_position + deltaTime * (k1_p + 2 * k2_p + 2 * k3_p + k4_p) / 6.0;
-    m_velocity = m_velocity + deltaTime * (k1_v + 2 * k2_v + 2 * k3_v + k4_v) / 6.0;
+    // Update position and velocity using Euler
+    m_position = m_position + deltaTime * m_velocity;
+    m_velocity = m_velocity + deltaTime * m_force / m_mass;
 }
-
 
 // Print the particle's details
 std::ostream& operator<<(std::ostream& os, const Particle& p) {
