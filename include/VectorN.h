@@ -1,36 +1,36 @@
-// VectorN.h
 #ifndef VECTORN_H
 #define VECTORN_H
 
 #include <ostream>
-#include <array>
+#include <vector>
+#include <stdexcept>
+#include <initializer_list>
+#include "Vector3.h"
 
-template<std::size_t N>
+template <typename T>
 class VectorN {
 private:
-    std::array<double, N> data;  // Fixed-size array of doubles
+    std::vector<T> data;  // Dynamic size array of T
 
 public:
-    // Default constructor - initializes all elements to zero
-    VectorN() { data.fill(0.0); }
+    // Default constructor - initializes an empty vector
+    VectorN() = default;
 
-    // Constructor to initialize the vector with specific values
-    VectorN(std::initializer_list<double> init) {
-        if (init.size() > N) {
-            throw std::invalid_argument("Initializer list size exceeds vector size");
-        }
-        std::copy(init.begin(), init.end(), data.begin());
+    // Constructor with a predefined size
+    explicit VectorN(std::size_t size) {
+        data.reserve(size); // Reserve space to avoid multiple allocations
     }
 
     // Access element by index (with bounds checking)
-    double& operator[](std::size_t index) {
-        if (index >= N) {
+    T& operator[](std::size_t index) {
+        if (index >= data.size()) {
             throw std::out_of_range("Index out of bounds");
         }
         return data[index];
     }
-    const double& operator[](std::size_t index) const {
-        if (index >= N) {
+    
+    const T& operator[](std::size_t index) const {
+        if (index >= data.size()) {
             throw std::out_of_range("Index out of bounds");
         }
         return data[index];
@@ -38,52 +38,80 @@ public:
 
     // Get the size of the vector
     std::size_t size() const {
-        return N;
+        return data.size();
+    }
+
+    // Method to append to the vector
+    void append(const T& vec) {
+        data.push_back(vec);
+    }
+
+    // Overload += operator for vector addition assignment
+    VectorN& operator+=(const VectorN& other) {
+        if (size() != other.size()) {
+            throw std::invalid_argument("Vector sizes must match for addition");
+        }
+        for (std::size_t i = 0; i < size(); ++i) {
+            data[i] += other[i]; // Use the existing operator+= from T
+        }
+        return *this;
+    }
+
+    // Overload -= operator for vector subtraction assignment
+    VectorN& operator-=(const VectorN& other) {
+        if (size() != other.size()) {
+            throw std::invalid_argument("Vector sizes must match for subtraction");
+        }
+        for (std::size_t i = 0; i < size(); ++i) {
+            data[i] -= other[i]; // Use the existing operator-= from T
+        }
+        return *this;
     }
 
     // Overload + operator for vector addition
-    VectorN<N> operator+(const VectorN<N>& other) const {
-        VectorN<N> result;
-        for (std::size_t i = 0; i < N; ++i) {
-            result[i] = data[i] + other[i];
+    VectorN operator+(const VectorN& other) const {
+        if (size() != other.size()) {
+            throw std::invalid_argument("Vector sizes must match for addition");
         }
+        VectorN result = *this; // Start with a copy of the current object
+        result += other; // Use the += operator to perform the addition
         return result;
     }
 
     // Overload - operator for vector subtraction
-    VectorN<N> operator-(const VectorN<N>& other) const {
-        VectorN<N> result;
-        for (std::size_t i = 0; i < N; ++i) {
-            result[i] = data[i] - other[i];
+    VectorN operator-(const VectorN& other) const {
+        if (size() != other.size()) {
+            throw std::invalid_argument("Vector sizes must match for subtraction");
         }
+        VectorN result = *this; // Start with a copy of the current object
+        result -= other; // Use the -= operator to perform the subtraction
         return result;
     }
 
     // Overload * operator for scalar multiplication
-    VectorN<N> operator*(double scalar) const {
-        VectorN<N> result;
-        for (std::size_t i = 0; i < N; ++i) {
-            result[i] = data[i] * scalar;
+    VectorN operator*(double scalar) const {
+        VectorN result(size());
+        for (const T& vec : data) {
+            result.data.push_back(vec * scalar); // Requires operator* defined for T
         }
         return result;
     }
-    friend VectorN<N> operator*(double scalar, const VectorN<N>& v) {
-        VectorN<N> result;
-        for (std::size_t i = 0; i < N; ++i) {
-            result[i] = scalar * v[i];  // Scalar pre-multiplication
-        }
-        return result;
+    friend VectorN operator*(double scalar, const VectorN& v) {
+        return v * scalar;  // Use the existing scalar multiplication
     }
 
     // Output the vector components
-    friend std::ostream& operator<<(std::ostream& os, const VectorN<N>& vec) {
-        for (std::size_t i = 0; i < N; ++i) {
+    friend std::ostream& operator<<(std::ostream& os, const VectorN& vec) {
+        for (std::size_t i = 0; i < vec.size(); ++i) {
             os << vec[i];
-            if (i < N - 1) os << "\n";
+            if (i < vec.size() - 1) os << "\n";
         }
         return os;
     }
-
 };
+
+// Explicit instantiation for Vector3 and double
+template class VectorN<Vector3>;
+template class VectorN<double>;
 
 #endif // VECTORN_H

@@ -22,6 +22,17 @@ public:
     void setY(double y) { m_y = y; }
     void setZ(double z) { m_z = z; }
 
+    // Constructor for brace initialization
+    Vector3(std::initializer_list<double> list) {
+        if (list.size() != 3) {
+            throw std::invalid_argument("Initializer list must have exactly three elements.");
+        }
+        auto it = list.begin();
+        m_x = *it++;
+        m_y = *it++;
+        m_z = *it;
+    }
+
     // Access elements using brackets
     double operator[](std::size_t index) const {
         switch (index) {
@@ -62,6 +73,11 @@ public:
         return result;
     }
 
+    // Unary negation operator
+    Vector3 operator-() const {
+        return Vector3(-m_x, -m_y, -m_z);
+    }
+
     // Scalar multiplication
     Vector3 operator*(double scalar) const {
         return Vector3(m_x * scalar, m_y * scalar, m_z * scalar);
@@ -97,7 +113,6 @@ public:
         double mag = magnitude();
         if (mag == 0) {
             return *this;
-            //throw std::invalid_argument("Cannot normalize a zero vector");
         }
         return *this / mag;
     }

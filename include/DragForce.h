@@ -9,6 +9,7 @@ public:
     // Constructor
     DragForce(double cd) : m_cd(cd) {}
 
+    void applyForce(System& system, const size_t particleIndex) const override;
     void applyForce(System& system) const override;
 
 private:

@@ -1,18 +1,23 @@
 // GravityForce.cpp
+
+#include <ostream>
 #include "GravityForce.h"
 #include "System.h"
 
+void GravityForce::applyForce(System& system, const size_t particleIndex) const {
+    system.addForce(particleIndex, system.getInverseMass(particleIndex) * m_gravity);
+}
+
 void GravityForce::applyForce(System& system) const {
-    for (const auto& particlePtr : system.getParticles()) {
-        Vector3 gravity(0, -m_gravity, 0);
-        particlePtr->setForce(particlePtr->getForce() + gravity * particlePtr->getMass());
+    for (std::size_t i = 0; i < system.getNumberParticles(); ++i) {
+        system.addForce(i, system.getMass(i) * m_gravity);
     }
 }
 
 double GravityForce::getPotentialEnergy(System& system) const {
     double PotentialEnergy = 0;
-    for (const auto& particlePtr : system.getParticles()) {
-        PotentialEnergy += particlePtr->getMass() * m_gravity * particlePtr->getPosition().getY();
+    for (std::size_t i = 0; i < system.getNumberParticles(); ++i) {
+        PotentialEnergy += system.getMass(i) * m_gravity[2] * system.getPosition(i).getY();
     }
     return PotentialEnergy;
 }

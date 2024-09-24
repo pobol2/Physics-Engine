@@ -1,3 +1,4 @@
+
 // Animate.cpp
 #include <GLFW/glfw3.h>
 #include <GL/glu.h>
@@ -230,26 +231,26 @@ void Animate(System system, GLFWwindow* window, GLUquadric* quadric) {
     glRotatef(camYaw, 0.0f, 1.0f, 0.0f);
 
     // Draw planes
-    for (const auto& planePtr : system.getPlanes()) {
+    for (const std::shared_ptr<Plane>& planePtr : system.getPlanes()) {
         setupPlaneMaterial();
         drawPlane(*planePtr); // 10x10 tiles, each 1 unit in size
     }
 
     // Draw springs
-    for (const auto& force : system.getForces()) {
+    for (const std::shared_ptr<Force>& force : system.getForces()) {
         if (auto springForce = dynamic_cast<SpringForce*>(force.get())) {
             size_t p1Index, p2Index;
             springForce->getParticles(p1Index, p2Index);
-            Vector3 start = system.getParticle(p1Index)->getPosition();
-            Vector3 end = system.getParticle(p2Index)->getPosition();
+            Vector3 start = system.getPosition(p1Index);
+            Vector3 end = system.getPosition(p2Index);
             setupSpringMaterial(); // Set spring material
             drawSpring(start, end, 10, 0.05); // Draw spring with 5 coils and a radius of 0.1
         }
     }
 
-    for (const auto& particlePtr : system.getParticles()) {
+    for (std::size_t particleIndex = 0; particleIndex < system.getNumberParticles(); ++particleIndex) {
 
-        Vector3 pos = particlePtr->getPosition();
+        Vector3 pos = system.getPosition(particleIndex);
 
         glPushMatrix();
         glTranslatef(pos.getX(), pos.getY(), pos.getZ()); // Translate sphere

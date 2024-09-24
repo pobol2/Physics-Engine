@@ -1,6 +1,6 @@
 // Plane.cpp
 #include "Plane.h"
-#include <iostream>
+#include "System.h"
 
 // Constructors
 Plane::Plane() : m_normal(Vector3()), m_point(Vector3()) {}
@@ -13,15 +13,15 @@ void Plane::setNormal(const Vector3& normal) { m_normal = normal; }
 Vector3 Plane::getPoint() const { return m_point; }
 void Plane::setPoint(const Vector3& point) { m_point = point; }
 
-bool Plane::checkCollision(const Particle& particle) const {
-    double distanceToPlane = (particle.getPosition() - m_point).dot(m_normal);
+bool Plane::checkCollision(const System& system, const size_t particleIndex) const {
+    double distanceToPlane = (system.getPosition(particleIndex) - m_point).dot(m_normal);
     return distanceToPlane <= 0;
 }
 
-void Plane::resolveCollision(Particle& particle) const {
-    Vector3 normalVelocity = particle.getVelocity().dot(m_normal) * m_normal;
-    Vector3 tangentialVelocity = particle.getVelocity() - normalVelocity;
+void Plane::resolveCollision(System& system, const size_t particleIndex) const {
+    Vector3 normalVelocity = system.getVelocity(particleIndex).dot(m_normal) * m_normal;
+    Vector3 tangentialVelocity = system.getVelocity(particleIndex) - normalVelocity;
     Vector3 newVelocity = tangentialVelocity - normalVelocity; // Elastic collision
 
-    particle.setVelocity(newVelocity);
+    system.setVelocity(newVelocity, particleIndex);
 }

@@ -6,7 +6,6 @@
 #include "System.h"
 #include "SpringForce.h"
 #include "Vector3.h"
-#include "Particle.h"
 
 void Cube(System& system, Vector3 position, Vector3 orientation, double halfSize, double K, double C) {
 
@@ -38,7 +37,7 @@ void Cube(System& system, Vector3 position, Vector3 orientation, double halfSize
 
         // Add particle to the system and store its ID
         system.addParticle(vertex, Vector3(0, 0, 0), 1.0);
-        particleIDs.push_back(system.getParticles().size() - 1); // Get the latest particle index
+        particleIDs.push_back(system.getNumberParticles() - 1); // Get the latest particle index
     }
 
     // Spring connections with adjusted lengths based on cube geometry

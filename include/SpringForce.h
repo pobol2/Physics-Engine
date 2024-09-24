@@ -4,7 +4,6 @@
 
 #include "Force.h"
 #include "Vector3.h"
-#include "System.h"
 
 class SpringForce : public Force {
 public:
@@ -13,6 +12,7 @@ public:
         : m_particle1Index(particle1Index), m_particle2Index(particle2Index), m_restLength(restLength), m_stiffness(stiffness), m_damping(damping) {}
 
     void applyForce(System& system) const override;
+    void applyForce(System& system, const size_t particleIndex) const override;
 
     double getPotentialEnergy(System& system) const override;
 

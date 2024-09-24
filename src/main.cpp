@@ -1,29 +1,15 @@
 // main.cpp
-#include <iostream>
 
-#include <GLFW/glfw3.h>
-#include <cmath> // For sin function
+#include <iostream>
 #include <chrono> // For execution time
 
-#include "Vector3.h"
-#include "Particle.h"
-#include "Plane.h"
 #include "System.h"
 #include "Animate.h"
-#include "GravityForce.h"
-#include "SpringForce.h"
-#include "DragForce.h"
-
 #include "Demo.h"
-
-#include "VectorN.h"
-#include "MatrixN.h"
-
 
 int main() {
 
     System system;
-
     // Add some cubes (system, position, orientation, halfSize, K, C)
     Cube(system, Vector3(1, 1, 0), Vector3(0, 0, 0), 0.4, 50, 5);
     Cube(system, Vector3(1, 1, 1.5), Vector3(0, 0, 0), 0.4, 50, 5);
@@ -41,7 +27,7 @@ int main() {
     system.addDragForce(1);
 
     // Time step
-    double stepTime = 0.0001; // Physics update interval
+    double stepTime = 0.00001; // Physics update interval
     double frameTime = 1.0 / 60.0; // Frame time for 60 FPS
 
     // Simulation time

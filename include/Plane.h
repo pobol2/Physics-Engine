@@ -2,8 +2,10 @@
 #ifndef PLANE_H
 #define PLANE_H
 
+// Forward declaration of System
+class System;
+
 #include "Vector3.h"
-#include "Particle.h"
 
 class Plane {
 private:
@@ -22,10 +24,10 @@ public:
     void setPoint(const Vector3& point);
 
     // Function to check if a particle collides with the plane
-    bool checkCollision(const Particle& particle) const;
+    bool checkCollision(const System& system, const size_t particleIndex) const;
 
     // Function to resolve the collision
-    void resolveCollision(Particle& particle) const;
+    void resolveCollision(System& system, const size_t particleIndex) const;
 };
 
 #endif // PLANE_H
