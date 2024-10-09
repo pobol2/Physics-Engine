@@ -13,6 +13,8 @@
 #include "DragForce.h"
 #include "SpringForce.h"
 #include "Plane.h"
+#include "Constraint.h"
+#include "FixedPositionConstraint.h"
 
 class System {
 private:
@@ -32,6 +34,9 @@ private:
 
     // Planes
     std::vector<std::shared_ptr<Plane>> m_planes;
+
+    // Constraints
+    std::vector<std::shared_ptr<Constraint>> m_constraints;
 
 public:
 
@@ -94,18 +99,19 @@ public:
     }
 
     // Method to increment sum forces for a specific particle
-    void addForce(size_t particleIndex, const Vector3& force) {
-        if (particleIndex < numberParticles) {
-            m_sumforces[particleIndex] += force;
-        } else {
-            std::cerr << "Error: Particle index out of bounds." << std::endl;
-        }
-    }
+    void addForce(size_t particleIndex, const Vector3& force) { m_sumforces[particleIndex] += force; }
 
     // Getters
     VectorN<Vector3> getSumForces() const { return m_sumforces; }
     Vector3 getSumForce(const size_t particleIndex) const { return m_sumforces[particleIndex]; };
     std::vector<std::shared_ptr<Force>> getForces() const { return m_forces; }
+
+    // ---------------------- Constraints ---------------------- //
+
+    // Method to add a fixed position contraint
+    void addFixedPositionConstraint(size_t particleIndex, Vector3 fixedPosition) {
+        m_constraints.push_back(std::make_shared<FixedPositionConstraint>(fixedPosition));
+    }
 
     // ---------------------- Simulation ---------------------- //
 
@@ -122,6 +128,15 @@ public:
             for (const std::shared_ptr<Force>& forceUnaryPtr : m_forcesUnary) { 
                 forceUnaryPtr->applyForce(*this, i);
             }
+            
+            // Apply constraint
+            if (i == 0) {
+                for (const std::shared_ptr<Constraint>& constraintPtr : m_constraints) {
+                    constraintPtr->applyConstraint(*this, i);
+                }
+            }
+
+            // Update position and velocity
             m_positions[i] += m_velocities[i] * deltaTime;
             m_velocities[i] += m_inverseMasses[i] * m_sumforces[i] * deltaTime;
 
@@ -135,7 +150,6 @@ public:
             m_sumforces[i] = Vector3(0, 0, 0); // Reset the forces on all particles
         }
     }
-
 
     // ---------------------- Energy ---------------------- //
 

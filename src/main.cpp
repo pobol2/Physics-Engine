@@ -10,11 +10,11 @@
 int main() {
 
     System system;
-    // Add some cubes (system, position, orientation, halfSize, K, C)
-    Cube(system, Vector3(1, 1, 0), Vector3(0, 0, 0), 0.4, 50, 5);
-    Cube(system, Vector3(1, 1, 1.5), Vector3(0, 0, 0), 0.4, 50, 5);
-    Cube(system, Vector3(1, 1, -1.5), Vector3(0, 0, 0), 0.4, 50, 5);
-    
+    // Add a cube (system, position, orientation, halfSize, K, C)
+    Cube(system, Vector3(1, 1, 0), Vector3(0, 0, 0), 0.4, 40, 5);
+
+    system.addFixedPositionConstraint(0, Vector3(0,1,0));
+
     // Create the floor plane
     double angle = 0.1;
     system.addPlane(Vector3(sin(angle), cos(angle), 0), Vector3(0, 0, 0));
