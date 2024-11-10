@@ -5,7 +5,7 @@
 #include "System.h"
 
 void GravityForce::applyForce(System& system, const size_t particleIndex) const {
-    system.addForce(particleIndex, system.getInverseMass(particleIndex) * m_gravity);
+    system.addForce(particleIndex, system.getMass(particleIndex) * m_gravity);
 }
 
 void GravityForce::applyForce(System& system) const {

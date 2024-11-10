@@ -12,6 +12,8 @@ set(PHYSICS_SOURCE
     ${PHYSICS_SOURCE_DIR}/DragForce.cpp
     ${PHYSICS_SOURCE_DIR}/SpringForce.cpp
     ${PHYSICS_SOURCE_DIR}/FixedPositionConstraint.cpp
+    ${PHYSICS_SOURCE_DIR}/LinkConstraint.cpp
+    ${PHYSICS_SOURCE_DIR}/DistanceConstraint.cpp
     ${PHYSICS_SOURCE_DIR}/Plane.cpp
     ${PHYSICS_SOURCE_DIR}/main.cpp
     ${PHYSICS_SOURCE_DIR}/Demo.cpp

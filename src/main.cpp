@@ -10,11 +10,16 @@
 int main() {
 
     System system;
+    
     // Add a cube (system, position, orientation, halfSize, K, C)
-    Cube(system, Vector3(1, 1, 0), Vector3(0, 0, 0), 0.4, 40, 5);
+    //Cube(system, Vector3(1, 1, 0), Vector3(0, 0, 0), 0.4, 40, 5);
+    system.addParticle(Vector3(1, 1, 0), Vector3(0, 0, 0), 1);
+    //system.addParticle(Vector3(2, 1, 0), Vector3(0, 0, 0), 1);
 
-    system.addFixedPositionConstraint(0, Vector3(0,1,0));
-
+    // Add constraints
+    system.addDistanceConstraint(0, Vector3(0, 1, 0), 1);
+    //system.addLinkConstraint(0, 1, 1);
+    
     // Create the floor plane
     double angle = 0.1;
     system.addPlane(Vector3(sin(angle), cos(angle), 0), Vector3(0, 0, 0));
@@ -27,7 +32,7 @@ int main() {
     system.addDragForce(1);
 
     // Time step
-    double stepTime = 0.00001; // Physics update interval
+    double stepTime = 0.0000001; // Physics update interval
     double frameTime = 1.0 / 60.0; // Frame time for 60 FPS
 
     // Simulation time
@@ -51,7 +56,6 @@ int main() {
             currentTime = glfwGetTime();
             totalTime -= stepTime;
         }
-
         // Render the frame
         Animate(system, window, quadric);
 

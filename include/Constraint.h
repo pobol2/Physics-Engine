@@ -10,6 +10,6 @@ class Constraint {
 public:
     virtual ~Constraint() = default;
     
-    virtual void applyConstraint(System& system, const size_t particleIndex) const = 0;
+    virtual void applyConstraint(System& system) const = 0;
 };
 #endif // CONSTRAINT_H

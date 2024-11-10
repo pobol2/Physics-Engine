@@ -15,6 +15,8 @@
 #include "Plane.h"
 #include "Constraint.h"
 #include "FixedPositionConstraint.h"
+#include "LinkConstraint.h"
+#include "DistanceConstraint.h"
 
 class System {
 private:
@@ -110,7 +112,17 @@ public:
 
     // Method to add a fixed position contraint
     void addFixedPositionConstraint(size_t particleIndex, Vector3 fixedPosition) {
-        m_constraints.push_back(std::make_shared<FixedPositionConstraint>(fixedPosition));
+        m_constraints.push_back(std::make_shared<FixedPositionConstraint>(particleIndex, fixedPosition));
+    }
+
+    // Method to add a fixed position contraint
+    void addLinkConstraint(size_t particle1Index, size_t particle2Index, double length) {
+        m_constraints.push_back(std::make_shared<LinkConstraint>(particle1Index, particle2Index, length));
+    }
+
+    // Method to add a distance position contraint
+    void addDistanceConstraint(size_t particleIndex, Vector3 attachPoint, double length) {
+        m_constraints.push_back(std::make_shared<DistanceConstraint>(particleIndex, attachPoint, length));
     }
 
     // ---------------------- Simulation ---------------------- //
@@ -118,23 +130,17 @@ public:
     // Update the state of the system using Euler method
     void update(double deltaTime) {
 
-        // Apply each N-ary force
-        for (const std::shared_ptr<Force>& forcesNaryPtr : m_forcesNary) { 
-            forcesNaryPtr->applyForce(*this);
-        } 
+        // Apply forces
+        for (const std::shared_ptr<Force>& forcesPtr : m_forces) { 
+            forcesPtr->applyForce(*this);
+        }
+
+        // Apply contraints
+        for (const std::shared_ptr<Constraint>& constraintPtr : m_constraints) {
+            constraintPtr->applyConstraint(*this);
+        }
         
         for (std::size_t i = 0; i < numberParticles; ++i) {
-            // Apply each unary force to the system
-            for (const std::shared_ptr<Force>& forceUnaryPtr : m_forcesUnary) { 
-                forceUnaryPtr->applyForce(*this, i);
-            }
-            
-            // Apply constraint
-            if (i == 0) {
-                for (const std::shared_ptr<Constraint>& constraintPtr : m_constraints) {
-                    constraintPtr->applyConstraint(*this, i);
-                }
-            }
 
             // Update position and velocity
             m_positions[i] += m_velocities[i] * deltaTime;

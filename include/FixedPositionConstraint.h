@@ -8,12 +8,13 @@
 class FixedPositionConstraint : public Constraint {
 public:
     // Constructors
-    FixedPositionConstraint(Vector3 fixedPosition) : m_fixedPosition(fixedPosition) {}
+    FixedPositionConstraint(size_t particleIndex, Vector3 fixedPosition) : m_particleIndex(particleIndex), m_fixedPosition(fixedPosition) {}
     
-    void applyConstraint(System& system, const size_t particleIndex) const override;
+    void applyConstraint(System& system) const override;
 
 
 private:
+    size_t m_particleIndex;
     Vector3 m_fixedPosition;
 };
 

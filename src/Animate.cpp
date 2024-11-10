@@ -164,7 +164,7 @@ std::tuple<GLFWwindow*, GLUquadric*> initAnimation() {
         std::cerr << "Failed to initialize GLFW" << std::endl;
     }
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    GLFWwindow* window = glfwCreateWindow(1200, 800, "3D Camera Movement", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(1200, 800, "Physics Engine", NULL, NULL);
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
