@@ -1,47 +1,35 @@
-cmake_minimum_required(VERSION 3.13.0)
+cmake_minimum_required(VERSION 3.20)
+project(physics_engine VERSION 1.0.0
+    DESCRIPTION "General-purpose C++ engine for classical particle mechanics"
+    HOMEPAGE_URL "https://github.com/pobol2/Physics-Engine"
+    LANGUAGES CXX)
+if(POLICY CMP0135)
+    cmake_policy(SET CMP0135 NEW)
+endif()
 
-set(PHYSICS_PROJECT_NAME
-    physics
-)
-set(PHYSICS_SOURCE_DIR
-    src
-)
-set(PHYSICS_SOURCE
-    ${PHYSICS_SOURCE_DIR}/Animate.cpp
-    ${PHYSICS_SOURCE_DIR}/GravityForce.cpp
-    ${PHYSICS_SOURCE_DIR}/DragForce.cpp
-    ${PHYSICS_SOURCE_DIR}/SpringForce.cpp
-    ${PHYSICS_SOURCE_DIR}/FixedPositionConstraint.cpp
-    ${PHYSICS_SOURCE_DIR}/LinkConstraint.cpp
-    ${PHYSICS_SOURCE_DIR}/DistanceConstraint.cpp
-    ${PHYSICS_SOURCE_DIR}/Plane.cpp
-    ${PHYSICS_SOURCE_DIR}/main.cpp
-    ${PHYSICS_SOURCE_DIR}/Demo.cpp
-)
-set(PHYSICS_LIBRARIES_DIR
-    libs
-)
-set(PHYSICS_LIBRARIES
-    glfw
-)
+# Orchestrates the repository. The reusable library lives in engine/ and builds
+# without anything else here; examples, apps, and tests are layered on top.
+option(PHYSICS_BUILD_VIEWER "Build the optional OpenGL viewer" OFF)
+option(PHYSICS_FETCH_GLFW "Fetch pinned GLFW if no installed package is found" ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+# Front ends and test programs land at the top of the build tree.
+if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
+endif()
 
-# gprof
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
-#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pg")
+function(physics_project_warnings target)
+    if(MSVC)
+        target_compile_options(${target} PRIVATE /W4)
+    else()
+        target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+endfunction()
 
-# Specify include directories
-include_directories(include)
+add_subdirectory(engine)
+add_subdirectory(examples)
+add_subdirectory(apps)
 
-project(${PHYSICS_PROJECT_NAME})
-
-# Find and link GLFW
-find_package(OpenGL REQUIRED)
-
-add_executable(${PHYSICS_PROJECT_NAME} ${PHYSICS_SOURCE})
-
-foreach(LIBRARY ${PHYSICS_LIBRARIES})
-    add_subdirectory("${PHYSICS_LIBRARIES_DIR}/${LIBRARY}")
-endforeach(LIBRARY)
-target_link_libraries(${PHYSICS_PROJECT_NAME} ${PHYSICS_LIBRARIES})
-
-target_link_libraries(${PROJECT_NAME} glfw OpenGL::GL GLU )
+include(CTest)
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif()

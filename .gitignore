@@ -1,39 +1,24 @@
-# Don't commit binaries
+# Build trees
+build/
+cmake-build*/
+out/
+
+# Compiled binaries
 *.a
-*.asm
 *.dll
 *.dylib
 *.exe
 *.lib
-*.out
 *.o
+*.obj
+*.out
 *.so
 *.so.*
 
-# Exclude editor config
+# Editor and IDE configuration
 .vscode/
 .vs/
+.idea/
 
-# Exclude temporary folders
-*.egg-info/
-build/
-
-# My ToDo list
-ToDo
-
-# Ignore ALL .aux .log .out .toc .synctex.gz files
-*.aux
-*.log
-*.out
-*.toc
-*.synctex.gz
-
-# Exclude python venv
-venv/
-
-# Exclude data results files
+# Simulation output
 *.csv
-
-# Ignore GLFW directories
-libs/simulation/libs/mujoco
-libs/glfw

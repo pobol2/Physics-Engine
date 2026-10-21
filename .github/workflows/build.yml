@@ -1,0 +1,63 @@
+name: Build and test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure without graphics using pinned Eigen
+        # Poison Eigen default constructors to catch missing explicit zeroing.
+        run: cmake -S . -B build/core -DPHYSICS_BUILD_VIEWER=OFF -DBUILD_TESTING=ON -DCMAKE_DISABLE_FIND_PACKAGE_Eigen3=ON "-DCMAKE_CXX_FLAGS=/DEIGEN_INITIALIZE_MATRICES_BY_NAN /EHsc"
+      - name: Build
+        run: cmake --build build/core --config ${{ matrix.configuration }} --parallel 2
+      - name: Test
+        run: ctest --test-dir build/core -C ${{ matrix.configuration }} --output-on-failure
+      - name: Run every example without graphics, fixed-step and adaptive
+        shell: pwsh
+        run: |
+          $runner = "./build/core/${{ matrix.configuration }}/physics_runner.exe"
+          foreach ($example in "oscillator", "pendulum", "driven-oscillator", "parametric-oscillator",
+                               "kapitza-pendulum", "double-pendulum", "rotating-hoop", "kepler", "three-body", "cyclotron") {
+            & $runner --example $example --duration 1 --csv "$example.csv"
+            if ($LASTEXITCODE -ne 0) { exit 1 }
+            & $runner --example $example --duration 1 --integrator adaptive --dt 0.1
+            if ($LASTEXITCODE -ne 0) { exit 1 }
+          }
+
+  windows-viewer:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure with pinned Eigen and GLFW
+        run: cmake -S . -B build/viewer -DPHYSICS_BUILD_VIEWER=ON -DCMAKE_DISABLE_FIND_PACKAGE_glfw3=ON -DCMAKE_DISABLE_FIND_PACKAGE_Eigen3=ON
+      - name: Build viewer, runner, and tests
+        run: cmake --build build/viewer --config Release --parallel 2
+      - name: Test physics, runner, and viewer help
+        run: ctest --test-dir build/viewer -C Release --output-on-failure
+
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure without graphics using pinned Eigen
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_DISABLE_FIND_PACKAGE_Eigen3=ON "-DCMAKE_CXX_FLAGS=-DEIGEN_INITIALIZE_MATRICES_BY_NAN"
+      - name: Build
+        run: cmake --build build --parallel 2
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+      - name: Build the engine library on its own
+        # engine/ must configure and build without examples, apps, or tests.
+        run: |
+          cmake -S engine -B build/engine-only -DCMAKE_BUILD_TYPE=Release -DCMAKE_DISABLE_FIND_PACKAGE_Eigen3=ON
+          cmake --build build/engine-only --parallel 2
