@@ -100,7 +100,7 @@ Or, with FetchContent:
 include(FetchContent)
 FetchContent_Declare(physics_engine
     GIT_REPOSITORY https://github.com/pobol2/Physics-Engine.git
-    GIT_TAG master            # or a specific commit, for reproducible builds
+    GIT_TAG v1.0.0            # a release tag, or a commit hash for an exact build
     SOURCE_SUBDIR engine)
 FetchContent_MakeAvailable(physics_engine)
 target_link_libraries(my_app PRIVATE physics::engine)
