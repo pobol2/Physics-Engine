@@ -1,5 +1,7 @@
 #include "physics/model.hpp"
 
+#include "unchecked.hpp"
+
 #include <Eigen/Geometry>
 #include <Eigen/QR>
 
@@ -298,8 +300,7 @@ Vectors evaluateForces(const Model& model, const State& state, double time) {
     return forces.conservative;
 }
 
-Dynamics evaluateDynamics(const Model& model, const State& state, double time) {
-    validateInputs(model, state, time);
+Dynamics unchecked::evaluateDynamics(const Model& model, const State& state, double time) {
     const std::size_t n = model.masses.size();
     const auto applied = appliedForces(model, state, time);
     Dynamics result{Vectors(n), Vectors(n)};
@@ -330,12 +331,16 @@ Dynamics evaluateDynamics(const Model& model, const State& state, double time) {
     return result;
 }
 
+Dynamics evaluateDynamics(const Model& model, const State& state, double time) {
+    validateInputs(model, state, time);
+    return unchecked::evaluateDynamics(model, state, time);
+}
+
 Vectors evaluateAccelerations(const Model& model, const State& state, double time) {
     return evaluateDynamics(model, state, time).accelerations;
 }
 
-Energy energy(const Model& model, const State& state, double time) {
-    validateInputs(model, state, time);
+Energy unchecked::energy(const Model& model, const State& state, double time) {
     Energy result;
     for (std::size_t i = 0; i < model.masses.size(); ++i) {
         result.kinetic += 0.5 * model.masses[i] * state.velocities[i].dot(state.velocities[i]);
@@ -357,6 +362,11 @@ Energy energy(const Model& model, const State& state, double time) {
     require(std::isfinite(result.kinetic) && std::isfinite(result.potential)
                 && std::isfinite(result.total()), "Evaluated energy must be finite");
     return result;
+}
+
+Energy energy(const Model& model, const State& state, double time) {
+    validateInputs(model, state, time);
+    return unchecked::energy(model, state, time);
 }
 
 Momentum momentum(const Model& model, const State& state) {
@@ -396,8 +406,8 @@ void applyPrescribedMotion(const Model& model, State& state, double time) {
     }
 }
 
-void projectConstraints(const Model& model, State& state, double time) {
-    validateInputs(model, state, time);
+void unchecked::projectConstraints(const Model& model, State& state, double time) {
+    validateState(model, state);
     State projected = state;
     applyPrescribedMotion(model, projected, time);
     const auto inverse_mass = inverseMasses(model);
@@ -434,5 +444,10 @@ void projectConstraints(const Model& model, State& state, double time) {
     applyCorrection(rows, inverse_mass, solveMultipliers(rows, inverse_mass, rhs), -1.0, projected.velocities);
     validateState(model, projected);
     state = std::move(projected);
+}
+
+void projectConstraints(const Model& model, State& state, double time) {
+    validateInputs(model, state, time);
+    unchecked::projectConstraints(model, state, time);
 }
 } // namespace physics

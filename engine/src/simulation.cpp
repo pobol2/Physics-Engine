@@ -1,5 +1,7 @@
 #include "physics/simulation.hpp"
 
+#include "unchecked.hpp"
+
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -55,11 +57,13 @@ public:
         for (const auto& prescribed : model.prescribed) free_[prescribed.particle] = false;
     }
 
-    // Prescribed particles follow their motion exactly at every stage.
+    // Prescribed particles follow their motion exactly at every stage. The model
+    // was validated before integration; only the stage state can go bad.
     Vector derivative(double time, const Vector& y) const {
         State stage = unpack(y);
         applyPrescribedMotion(model_, stage, time);
-        const auto dynamics = evaluateDynamics(model_, stage, time);
+        validateState(model_, stage);
+        const auto dynamics = unchecked::evaluateDynamics(model_, stage, time);
         ++statistics_.evaluations;
         const auto n = static_cast<Eigen::Index>(stage.positions.size());
         Vector dy(y.size());
@@ -165,7 +169,7 @@ State rk4Step(const Model& model, const State& state, double time, double dt) {
     StepStatistics unused;
     State result = unpack(System(model, unused).rk4(time, pack(state, 0.0), dt));
     // Projection validates the combined state before accepting it.
-    projectConstraints(model, result, time + dt);
+    unchecked::projectConstraints(model, result, time + dt);
     return result;
 }
 
@@ -179,7 +183,7 @@ Simulation::Simulation(Model model, State initial_state, double start_time)
 
 void Simulation::accept(State next, double work, double next_time) {
     const double dt = next_time - time_;
-    if (!std::isfinite(energy(model_, next, next_time).total()) || !std::isfinite(work)) {
+    if (!std::isfinite(unchecked::energy(model_, next, next_time).total()) || !std::isfinite(work)) {
         throw std::runtime_error("Non-finite energy after step");
     }
     if (statistics_.accepted == std::numeric_limits<std::uint64_t>::max()) {
@@ -199,7 +203,7 @@ void Simulation::step(double dt) {
     StepStatistics trial = statistics_;
     const Vector y = System(model_, trial).rk4(time_, pack(state_, external_work_), dt);
     State next = unpack(y);
-    projectConstraints(model_, next, time_ + dt);
+    unchecked::projectConstraints(model_, next, time_ + dt);
     const double work = y[y.size() - 1];
     statistics_.evaluations = trial.evaluations;
     accept(std::move(next), work, time_ + dt);
@@ -248,7 +252,7 @@ void Simulation::advanceAdaptive(double end_time, const AdaptiveSettings& settin
             error = system.errorNorm(difference, pack(state_, external_work_), next, settings);
             if (error <= 1.0) {
                 projected = unpack(next);
-                projectConstraints(model_, projected, next_time);
+                unchecked::projectConstraints(model_, projected, next_time);
             }
         } catch (const std::exception& exception) {
             // A singular stage or failed projection: retry with a smaller step.
