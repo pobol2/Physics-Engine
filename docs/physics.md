@@ -195,6 +195,19 @@ The inverted position is stable when `(a ω)² > 2 g l`.
 **Double pendulum.** A rod from the pivot to mass 1 and a link from mass 1 to
 mass 2. The reference is Lagrange's equations in `θ1`, `θ2`.
 
+**Folded chain.** `N` equal masses joined by rigid links, the first on a rod from
+the pivot, released at rest in a narrow U with the free end beside the pivot.
+Optional springs between masses `i - 1` and `i + 1`, relaxed when the chain is
+straight, resist sharp kinks. In the energy-conserving continuum model (Calkin and
+March, 1989), after the free end of a chain of length `L` falls `x`:
+
+```text
+v² = g x (2L - x) / (L - x)      (free fall: v² = 2 g x)
+```
+
+The free end starts accelerating at `g` and then outruns free fall. The discrete chain converges
+to this model as the links get shorter and the fold narrower.
+
 **Bead on a rotating hoop.** Radius `R`, spinning at `Ω` about the vertical,
 modelled as a distance constraint plus a rotating plane:
 

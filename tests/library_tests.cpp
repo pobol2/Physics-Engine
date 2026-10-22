@@ -466,7 +466,7 @@ void diagnostics() {
 }
 
 void exampleCatalog() {
-    check(examples::catalog().size() == 10, "Catalog lists every example");
+    check(examples::catalog().size() == 11, "Catalog lists every example");
     for (const auto& spec : examples::catalog()) {
         auto example = examples::build(spec);
         Simulation fixed(example.model, example.initial_state);

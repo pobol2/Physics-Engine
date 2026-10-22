@@ -28,7 +28,8 @@ jobs:
         run: |
           $runner = "./build/core/${{ matrix.configuration }}/physics_runner.exe"
           foreach ($example in "oscillator", "pendulum", "driven-oscillator", "parametric-oscillator",
-                               "kapitza-pendulum", "double-pendulum", "rotating-hoop", "kepler", "three-body", "cyclotron") {
+                               "kapitza-pendulum", "double-pendulum", "folded-chain", "rotating-hoop", "kepler",
+                               "three-body", "cyclotron") {
             & $runner --example $example --duration 1 --csv "$example.csv"
             if ($LASTEXITCODE -ne 0) { exit 1 }
             & $runner --example $example --duration 1 --integrator adaptive --dt 0.1

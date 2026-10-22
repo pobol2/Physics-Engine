@@ -30,7 +30,7 @@ endforeach()
 
 physics_test_executable(physics_example_tests example_tests.cpp)
 foreach(test_name IN ITEMS driven_oscillator parametric_oscillator kapitza_pendulum double_pendulum
-                           rotating_hoop kepler three_body cyclotron)
+                           folded_chain rotating_hoop kepler three_body cyclotron)
     add_test(NAME example_${test_name} COMMAND physics_example_tests ${test_name})
 endforeach()
 

@@ -12,6 +12,7 @@
 #include <cmath>
 #include <iostream>
 #include <utility>
+#include <vector>
 
 namespace {
 using namespace physics;
@@ -167,6 +168,47 @@ void doublePendulum() {
     }
 }
 
+void foldedChain() {
+    // An ideal chain: fine links and a narrow fold approach the continuum model.
+    examples::FoldedChainConfig c;
+    c.links = 60.0;
+    c.gap = 0.06;
+    const auto example = examples::foldedChain(c);
+    const std::size_t tip = example.initial_state.positions.size() - 1;
+    const double start = example.initial_state.positions[tip].y();
+    const double release = evaluateAccelerations(example.model, example.initial_state, 0.0)[tip].y();
+
+    // Times at which the free end has fallen each depth, interpolated between samples.
+    auto sim = simulation(example);
+    const std::vector<double> depths{0.5, 1.0, 1.5};
+    std::vector<double> times;
+    double previous_time = 0.0, previous_drop = 0.0;
+    while (times.size() < depths.size()) {
+        sim.advanceAdaptive(sim.time() + 5e-4, {1e-10, 1e-10});
+        const double drop = start - sim.state().positions[tip].y();
+        while (times.size() < depths.size() && drop >= depths[times.size()]) {
+            const double fraction = (depths[times.size()] - previous_drop) / (drop - previous_drop);
+            times.push_back(previous_time + fraction * (sim.time() - previous_time));
+        }
+        previous_time = sim.time();
+        previous_drop = drop;
+    }
+    for (std::size_t i = 0; i < depths.size(); ++i) {
+        const double reference = test::foldedChainFallTime(c.length, c.gravity, depths[i]);
+        const double free_fall = std::sqrt(2.0 * depths[i] / c.gravity);
+        near(times[i] / reference, 1.0, 0.015, "Free end follows the energy-conserving chain model");
+        std::cout << "depth " << depths[i] << " m: t=" << times[i] << " s, model " << reference
+                  << " s, free fall " << free_fall << " s\n";
+    }
+    near(release, -c.gravity, 0.05, "Free end starts in free fall");
+    check(times.back() < 0.95 * std::sqrt(2.0 * depths.back() / c.gravity), "Free end falls faster than g");
+    const auto d = sim.diagnostics();
+    near(d.energy_change, 0.0, 1e-8, "Ideal chain conserves energy");
+    near(d.constraints.max_position_error, 0.0, 1e-13, "Links stay rigid");
+    std::cout << "release acceleration=" << release << " energy change=" << d.energy_change
+              << " steps=" << sim.steps() << '\n';
+}
+
 void rotatingHoop() {
     const examples::RotatingHoopConfig c{};
     const double g = c.gravity, r = c.radius, spin = c.rotation_rate;
@@ -298,6 +340,6 @@ int main(int argc, char** argv) {
     return test::run(argc, argv, {
         {"driven_oscillator", drivenOscillator}, {"parametric_oscillator", parametricOscillator},
         {"kapitza_pendulum", kapitzaPendulum}, {"double_pendulum", doublePendulum},
-        {"rotating_hoop", rotatingHoop}, {"kepler", kepler}, {"three_body", threeBody},
+        {"folded_chain", foldedChain}, {"rotating_hoop", rotatingHoop}, {"kepler", kepler}, {"three_body", threeBody},
         {"cyclotron", cyclotron}});
 }

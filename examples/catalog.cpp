@@ -81,6 +81,14 @@ std::vector<Spec> makeCatalog() {
             {"angle2", &DoublePendulumConfig::angle2, "rad from downward vertical"},
             {"angular-velocity1", &DoublePendulumConfig::angular_velocity1, "rad/s"},
             {"angular-velocity2", &DoublePendulumConfig::angular_velocity2, "rad/s"}}, &doublePendulum));
+    specs.push_back(makeSpec<FoldedChainConfig>("folded-chain",
+        "Chain of rigid links released folded; its free end falls faster than g", 0.6, 0.0001, {
+            {"mass", &FoldedChainConfig::mass, "kg, whole chain"},
+            {"length", &FoldedChainConfig::length, "m, whole chain"},
+            {"links", &FoldedChainConfig::links, "number of rigid links"},
+            {"gap", &FoldedChainConfig::gap, "m between the arms"},
+            {"bending", &FoldedChainConfig::bending, "N/m, springs between every other mass"},
+            {"gravity", &FoldedChainConfig::gravity, "m/s^2"}}, &foldedChain));
     specs.push_back(makeSpec<RotatingHoopConfig>("rotating-hoop",
         "Bead on a hoop spinning about the vertical (rheonomic constraint)", 10.0, 0.001, {
             {"mass", &RotatingHoopConfig::mass, "kg"},

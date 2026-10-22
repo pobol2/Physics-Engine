@@ -78,6 +78,18 @@ struct DoublePendulumConfig {
     double angular_velocity2 = 0.0;
 };
 
+// Chain of equal rigid links hanging from a fixed pivot, released at rest folded
+// in a narrow U with its free end beside the pivot. The free end falls faster
+// than g. Optional springs between every other mass resist sharp kinks.
+struct FoldedChainConfig {
+    double mass = 1.0;    // whole chain, kg
+    double length = 2.0;  // whole chain, m
+    double links = 30.0;  // whole number
+    double gap = 0.14;    // between the arms, m
+    double bending = 0.0; // N/m
+    double gravity = 9.81;
+};
+
 // Bead on a circular hoop spinning at a constant rate about the vertical axis:
 // a fixed-radius constraint plus a rotating-plane constraint.
 struct RotatingHoopConfig {
@@ -118,6 +130,7 @@ Example drivenOscillator(const DrivenOscillatorConfig& config = {});
 Example parametricOscillator(const ParametricOscillatorConfig& config = {});
 Example kapitzaPendulum(const KapitzaPendulumConfig& config = {});
 Example doublePendulum(const DoublePendulumConfig& config = {});
+Example foldedChain(const FoldedChainConfig& config = {});
 Example rotatingHoop(const RotatingHoopConfig& config = {});
 Example kepler(const KeplerConfig& config = {});
 Example threeBody(const ThreeBodyConfig& config = {});

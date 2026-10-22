@@ -67,6 +67,7 @@ calculations and closed-form solutions:
 | Kapitza pendulum | Angular ODE with moving pivot, t = 1 s | `1.8e-12 rad`; inverted deviation `0.24` (stable) vs `3.1` (`a ω` too small) |
 | Kapitza, as particle + link | Same system with a moving-pivot rod | `< 1e-11 m` |
 | Double pendulum | Lagrange's equations, t = 3 s | RK4: `6.1e-11 rad`; adaptive (682 steps): `7.3e-11 rad` |
+| Folded chain, 60 links | Energy-conserving chain model: fall time to 0.5, 1.0, 1.5 m | within `0.5%`, `0.7%`, `1.0%`, while free fall takes `1.9%`, `4.7%`, `8.9%` longer; energy `7.0e-10 J` |
 | Rotating hoop | Reduced ODE and Jacobi integral, t = 3 s | `6.6e-11 rad`; Jacobi drift `9.0e-11`; hoop work `21.5 J` balanced to `1e-9` |
 | Kepler, e = 0.6 | Closure after `2π sqrt(a³/μ)`, `E`, `L`, Runge–Lenz vector | `7.1e-11 m` in 3334 evaluations (RK4 `dt = 1e-3`: `1.2e-10 m` in 25136) |
 | Figure-eight | Choreography after `T/3`, closure after `T` | `1.8e-8`, `4.1e-8` (limited by 8-digit initial data) |

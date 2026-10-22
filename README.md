@@ -2,6 +2,12 @@
 
 [![Build and test](https://github.com/pobol2/Physics-Engine/actions/workflows/build.yml/badge.svg)](https://github.com/pobol2/Physics-Engine/actions/workflows/build.yml)
 
+![Slow-motion animation of a steel chain pinned at one end and released folded, beside a blue ball dropped from the level of its orange free end. The free end falls ahead of the ball, whips at the bottom, and arrives first. Beside it, graphs trace the free end's height below the free-fall parabola and the energy-balance error on a log scale.](docs/images/folded-chain.gif)
+
+*The `folded-chain` example with `--bending 40`, adaptive at `rtol = atol = 1e-10`, at
+1/20 speed: the free end reaches its lowest point at 0.555 s, free fall at 0.634 s;
+largest energy-balance error 8.2 × 10⁻⁸ J ([script](docs/images/readme_figure.py)).*
+
 A C++17 library for classical particle mechanics. You describe particles, forces,
 constraints, and moving supports; the engine integrates the equations of motion
 with fixed-step or adaptive Runge–Kutta methods and reports diagnostics that make
@@ -53,8 +59,8 @@ build/physics_viewer --example double-pendulum --angle1 2.5 --duration 30
 ```
 
 The examples are `oscillator`, `pendulum`, `driven-oscillator`,
-`parametric-oscillator`, `kapitza-pendulum`, `double-pendulum`, `rotating-hoop`,
-`kepler`, `three-body`, and `cyclotron`. `--list` shows each one's parameters,
+`parametric-oscillator`, `kapitza-pendulum`, `double-pendulum`, `folded-chain`,
+`rotating-hoop`, `kepler`, `three-body`, and `cyclotron`. `--list` shows each one's parameters,
 units, and defaults. The runner prints a summary and, with `--csv`, writes one row
 per particle per sample. Units are SI; angles are radians from the downward
 vertical. With Visual Studio, executables are in `build/Release/`.
@@ -116,7 +122,7 @@ complete template.
 | Path | Contents |
 | --- | --- |
 | `engine/` | The library: public headers in `include/physics/`, sources in `src/` |
-| `examples/` | Ten example systems, and `external-project/`, a template for using the engine |
+| `examples/` | Eleven example systems, and `external-project/`, a template for using the engine |
 | `apps/` | Command-line runner and optional OpenGL viewer |
 | `tests/` | Unit tests, validation against references, accuracy sweeps |
 | `docs/` | Theory, design, and validation results |

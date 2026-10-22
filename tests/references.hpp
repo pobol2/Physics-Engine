@@ -54,6 +54,22 @@ inline Ode parametricOde(const physics::examples::ParametricOscillatorConfig& c)
     };
 }
 
+// Energy-conserving folded chain (Calkin and March, Am. J. Phys. 57, 154, 1989):
+// after the free end of a chain of length L falls a distance x from beside the
+// pivot, it moves at v^2 = g x (2L - x) / (L - x). Returns the time to fall x,
+// by Simpson's rule on t = integral of 2 sqrt((L - s^2) / (g (2L - s^2))) ds
+// from 0 to sqrt(x), which is t = integral of dx / v with x = s^2.
+inline double foldedChainFallTime(double length, double gravity, double x) {
+    const auto integrand = [&](double s) {
+        return 2.0 * std::sqrt((length - s * s) / (gravity * (2.0 * length - s * s)));
+    };
+    const int intervals = 2000;
+    const double h = std::sqrt(x) / intervals;
+    double sum = integrand(0.0) + integrand(std::sqrt(x));
+    for (int i = 1; i < intervals; ++i) sum += (i % 2 == 1 ? 4.0 : 2.0) * integrand(i * h);
+    return sum * h / 3.0;
+}
+
 inline Eigen::VectorXd vector(std::initializer_list<double> values) {
     Eigen::VectorXd result(static_cast<Eigen::Index>(values.size()));
     Eigen::Index i = 0;
